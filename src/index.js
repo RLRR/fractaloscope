@@ -1,3 +1,3 @@
-var Scope = require('./src/Scope');
+var Scope = require('./Scope');
 
 window.hey = new Scope(document.getElementById('display'));
