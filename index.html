@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>Fractaloscope</title>
+
+        <meta name="MobileOptimized" content="1000"/>
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+        <meta name="title" content="Fractaloscope">
+        <meta name="description" content="A fractal experience">
+
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://rlrr.github.io/fractaloscope/">
+        <meta property="og:title" content="Fractaloscope">
+        <meta property="og:description" content="A fractal experience">
+        <meta property="og:image" content="https://rlrr.github.io/fractaloscope/fractaloscope.jpg">
+
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="https://rlrr.github.io/fractaloscope/">
+        <meta property="twitter:title" content="Fractaloscope">
+        <meta property="twitter:description" content="A fractal experience">
+        <meta property="twitter:image" content="https://rlrr.github.io/fractaloscope/fractaloscope.jpg">
+
+        <link href="style.css" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.png"></head>
+    <body>
+        <div class="display"></div>
+        <audio class="audio" loop src="arctic-neon.mp3"></audio>
+        <div class="tips mouse">
+            <div class="tip drag"><img src="mouse-left.svg"> to drag</div>
+            <div class="tip morph"><img src="mouse-right.svg"> to morph</div>
+            <div class="tip zoom"><img src="mouse-wheel.svg"> to zoom</div>
+        </div>
+        <div class="tips touch">
+            <div class="tip drag"><img src="touch-one.svg"> to drag</div>
+            <div class="tip morph"><img src="touch-two.svg"> to morph</div>
+            <div class="tip zoom"><img src="touch-pinch.svg"> to zoom</div>
+        </div>
+        <div class="sound-button">
+            <img class="on hidden" src="sound-on.svg">
+            <img class="off" src="sound-off.svg">
+        </div>
+
+        <div class="no-webgl" id="no-webgl">
+            <div class="no-webgl-cell">
+                <p>Your browser does not support WebGL.</p>
+            </div>
+        </div>
+    <script type="text/javascript" src="bundle.js"></script></body>
+</html>
