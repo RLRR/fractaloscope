@@ -10,15 +10,19 @@ module.exports = function(env = {}) {
                 children: false,
             },
         },
-        entry: './src/index.js',
+        entry: './src/index.ts',
         output: {
             path: path.join(__dirname, 'dist'),
             filename: 'bundle.js',
         },
         module: {
             rules: [
+                {test: /\.ts$/, loader: 'ts-loader'},
                 {test: /\.glsl$/, loader: 'webpack-glsl-loader'},
             ],
+        },
+        resolve: {
+            extensions: ['.ts', '.js', '.glsl'],
         },
         plugins: [
             new HtmlWebpackPlugin({

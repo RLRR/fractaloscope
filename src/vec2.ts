@@ -1,20 +1,21 @@
-class Vec2 {
-    constructor(x, y) {
+export class Vec2 {
+    public x: number;
+    public y: number;
+
+    constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
     }
 
-    add(vec) {
+    add(vec: Vec2): Vec2 {
         return new Vec2(this.x + vec.x, this.y + vec.y);
     }
 
-    sub(vec) {
+    sub(vec: Vec2): Vec2 {
         return new Vec2(this.x - vec.x, this.y - vec.y);
     }
 
-    mul(scalar) {
+    mul(scalar: number): Vec2 {
         return new Vec2(this.x * scalar, this.y * scalar);
     }
 }
-
-module.exports = Vec2;

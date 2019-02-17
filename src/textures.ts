@@ -1,20 +1,20 @@
-var colorbrewer = require('./vendor/colorbrewer');
+import { colorbrewer } from './vendor/colorbrewer';
+import { RGBA } from './types';
 
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+function hexToRgb(hex: string): RGBA {
     return [
-        parseInt(result[1], 16),
-        parseInt(result[2], 16),
-        parseInt(result[3], 16),
+        parseInt(hex.slice(1, 3), 16),
+        parseInt(hex.slice(3, 5), 16),
+        parseInt(hex.slice(5, 7), 16),
         255
     ];
 }
 
-module.exports = [{
+export const textures = [{
     size: 9,
     data: (function() {
-        var colors = colorbrewer.BuPu['9'].map(hexToRgb).reverse();
-        var result = [];
+        const colors = colorbrewer.BuPu['9'].map(hexToRgb).reverse();
+        let result: any[] = [];
         result =  result.concat.apply(result, colors);
 
         return new Uint8Array(result);
@@ -24,10 +24,10 @@ module.exports = [{
     size: 256,
     circular: false,
     data: (function getHotPalette(size) {
-        var colors = [];
-        var n = 3 * size / 8;
+        const colors: number[] = [];
+        const n = 3 * size / 8;
 
-        for (var i = 0; i < size; i++) {
+        for (let i = 0; i < size; i++) {
             let r = i < n ? (i + 1) / n : 1;
             let g = i < n ? 0 : (i < 2 * n ? (i - n) / n : 1);
             let b = i < 2 * n ? 0 : (i - 2 * n) / (size - 2 * n);
