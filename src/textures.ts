@@ -6,20 +6,20 @@ function hexToRgb(hex: string): RGBA {
         parseInt(hex.slice(1, 3), 16),
         parseInt(hex.slice(3, 5), 16),
         parseInt(hex.slice(5, 7), 16),
-        255
+        255,
     ];
 }
 
 export const textures = [{
     size: 9,
-    data: (function() {
+    data: (function () {
         const colors = colorbrewer.BuPu['9'].map(hexToRgb).reverse();
         let result: any[] = [];
         result =  result.concat.apply(result, colors);
 
         return new Uint8Array(result);
-    }())
-},{
+    }()),
+}, {
     name: 'hot',
     size: 256,
     circular: false,
@@ -35,22 +35,22 @@ export const textures = [{
                 Math.round(r * 255),
                 Math.round(g * 255),
                 Math.round(b * 255),
-                255
+                255,
             );
         }
 
         return new Uint8Array(colors);
-    }(256))
+    }(256)),
 }, {
     name: 'night',
     size: 2,
     circular: false,
-    data: new Uint8Array([0, 0, 0, 255, 255, 255, 255, 255])
+    data: new Uint8Array([0, 0, 0, 255, 255, 255, 255, 255]),
 }, {
     name: 'gray',
     size: 2,
     circular: false,
-    data: new Uint8Array([255, 255, 255, 255, 0, 0, 0, 255])
+    data: new Uint8Array([255, 255, 255, 255, 0, 0, 0, 255]),
 }, {
     name: 'bicycle',
     size: 6,
@@ -58,10 +58,10 @@ export const textures = [{
     data: new Uint8Array([
         255,   0,   0, 255,
         255, 255,   0, 255,
-          0, 255,   0, 255,
-          0, 255, 255, 255,
-          0,   0, 255, 255,
+        0, 255,   0, 255,
+        0, 255, 255, 255,
+        0,   0, 255, 255,
         255,   0, 255, 255,
-        255,   0,   0, 255
-    ])
+        255,   0,   0, 255,
+    ]),
 }];

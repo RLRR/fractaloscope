@@ -66,6 +66,6 @@ export class MouseInteraction {
 
         this.startPoint = new Vec2(e.clientX, e.clientY);
 
-        this.scope.setSeed(newSeed)
+        this.scope.setSeed(newSeed);
     }
 }

@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 // This product includes color specifications and designs developed by Cynthia Brewer (http://colorbrewer.org/).
 // JavaScript specs as packaged in the D3 library (d3js.org). Please see license at http://colorbrewer.org/export/LICENSE.txt
 export const colorbrewer = {YlGn: {

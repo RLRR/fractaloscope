@@ -23,9 +23,9 @@ export class Uniform {
     }
 
     set(...value: number[]): void {
-        const {gl, location} = this;
+        const { gl, location } = this;
 
-        switch(this.type) {
+        switch (this.type) {
             case '1i':
                 gl.uniform1i(location, value[0]);
                 break;

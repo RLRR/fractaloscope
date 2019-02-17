@@ -5,8 +5,8 @@ import { MouseZoom } from './handler/mouseZoom';
 import { MouseInteraction } from './handler/mouseInteraction';
 import { Uniform } from './uniform';
 
-import vertexShaderCode from './shaders/vertex.glsl';
-import fragmentShaderCode from './shaders/fragment.glsl';
+import vertGlsl from './shaders/vert.glsl';
+import fragGlsl from './shaders/frag.glsl';
 
 export class Scope {
     private container: HTMLElement;
@@ -107,7 +107,7 @@ export class Scope {
 
         return new Vec2(
                 coords.x / size.x * 2 - 1,
-                (size.y - coords.y) / size.y * 2 - 1
+                (size.y - coords.y) / size.y * 2 - 1,
             )
             .mul(1 / Math.pow(2, this.zoom))
             .add(this.center);
@@ -118,28 +118,28 @@ export class Scope {
 
         return new Vec2(
                 coords.x / size.x * 2 - 1,
-                (size.y - coords.y) / size.y * 2 - 1
+                (size.y - coords.y) / size.y * 2 - 1,
             )
             .mul(1 / Math.pow(2, this.zoom))
             .add(this.center);
     }
 
     private initWebGl(): void {
-        const {gl} = this;
+        const { gl } = this;
 
         gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
     }
 
     private initShaders(): void {
-        const {gl, program} = this;
+        const { gl, program } = this;
 
         const vertexShader = gl.createShader(gl.VERTEX_SHADER) as WebGLShader;
-        gl.shaderSource(vertexShader, vertexShaderCode);
+        gl.shaderSource(vertexShader, vertGlsl);
         gl.compileShader(vertexShader);
 
         const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER) as WebGLShader;
-        gl.shaderSource(fragmentShader, fragmentShaderCode);
+        gl.shaderSource(fragmentShader, fragGlsl);
         gl.compileShader(fragmentShader);
 
         gl.attachShader(program, vertexShader);
@@ -149,7 +149,7 @@ export class Scope {
     }
 
     private initRectangle(): void {
-        const {gl} = this;
+        const { gl } = this;
 
         const minX = -3;
         const maxX = 3;
@@ -162,7 +162,7 @@ export class Scope {
             minX, maxY,
             minX, maxY,
             maxX, minY,
-            maxX, maxY
+            maxX, maxY,
         ]);
 
         const buffer = gl.createBuffer();
@@ -175,7 +175,7 @@ export class Scope {
     }
 
     private setTexture(index: number): void {
-        const {gl} = this;
+        const { gl } = this;
 
         const texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -211,7 +211,7 @@ export class Scope {
     }
 
     private render() {
-        const {gl} = this;
+        const { gl } = this;
 
         requestAnimationFrame(this.render.bind(this));
 
