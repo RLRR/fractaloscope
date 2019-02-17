@@ -27,8 +27,10 @@ export class Uniform {
 
         switch(this.type) {
             case '1i':
-            case '1f':
                 gl.uniform1i(location, value[0]);
+                break;
+            case '1f':
+                gl.uniform1f(location, value[0]);
                 break;
             case '2f':
                 gl.uniform2f(location, value[0], value[1]);

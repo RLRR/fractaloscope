@@ -38,6 +38,8 @@ export class Scope {
         this.gl = gl;
         this.program = program;
 
+        this.initShaders();
+
         this.seedUniform = new Uniform(gl, program, 'seed', '2f');
         this.centerUniform = new Uniform(gl, program, 'center', '2f');
         this.scaleUniform = new Uniform(gl, program, 'scale', '1f');
@@ -58,9 +60,7 @@ export class Scope {
         this.height = this.canvas.height = this.canvas.offsetHeight;
 
         this.initWebGl();
-        this.initShaders();
         this.initRectangle();
-
         this.initState();
         this.initHandlers();
 
@@ -200,7 +200,7 @@ export class Scope {
         this.setSeed(new Vec2(0.156, 0.8));
         this.setTexture(0);
 
-        this.maxIterationCountUniform.set(300);
+        this.maxIterationCountUniform.set(150);
         this.aspectRatioUniform.set(this.width / this.height);
     }
 

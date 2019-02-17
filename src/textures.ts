@@ -28,9 +28,9 @@ export const textures = [{
         const n = 3 * size / 8;
 
         for (let i = 0; i < size; i++) {
-            let r = i < n ? (i + 1) / n : 1;
-            let g = i < n ? 0 : (i < 2 * n ? (i - n) / n : 1);
-            let b = i < 2 * n ? 0 : (i - 2 * n) / (size - 2 * n);
+            const r = i < n ? (i + 1) / n : 1;
+            const g = i < n ? 0 : (i < 2 * n ? (i - n) / n : 1);
+            const b = i < 2 * n ? 0 : (i - 2 * n) / (size - 2 * n);
             colors.push(
                 Math.round(r * 255),
                 Math.round(g * 255),
