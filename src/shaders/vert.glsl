@@ -10,5 +10,5 @@ varying vec2 coordinates;
 
 void main() {
     coordinates = a_position;
-    gl_Position = vec4((a_position * vec2(1, aspectRatio) - center) * scale, 0, 1);
+    gl_Position = vec4((a_position - center) * vec2(1, aspectRatio) * scale, 0, 1);
 }

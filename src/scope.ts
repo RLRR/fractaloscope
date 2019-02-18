@@ -104,10 +104,11 @@ export class Scope {
 
     public unproject(coords: Vec2): Vec2 {
         const size = this.getSize();
+        const aspectRatio = size.x / size.y;
 
         return new Vec2(
                 coords.x / size.x * 2 - 1,
-                (size.y - coords.y) / size.y * 2 - 1,
+                ((size.y - coords.y) / size.y * 2 - 1) / aspectRatio,
             )
             .mul(1 / Math.pow(2, this.zoom))
             .add(this.center);
@@ -115,13 +116,14 @@ export class Scope {
 
     public unprojectSeed(coords: Vec2): Vec2 {
         const size = this.getSize();
+        const aspectRatio = size.x / size.y;
 
         return new Vec2(
                 coords.x / size.x * 2 - 1,
-                (size.y - coords.y) / size.y * 2 - 1,
+                ((size.y - coords.y) / size.y * 2 - 1) / aspectRatio,
             )
             .mul(1 / Math.pow(2, this.zoom))
-            .add(this.center);
+            .add(this.seed);
     }
 
     public resetSize = (): void => {
@@ -160,18 +162,16 @@ export class Scope {
     private initGeometry(): void {
         const { gl } = this;
 
-        const minX = -3;
-        const maxX = 3;
-        const minY = -2;
-        const maxY = 2;
+        const min = -3;
+        const max = 3;
 
         const vertices = new Float32Array([
-            minX, minY,
-            maxX, minY,
-            minX, maxY,
-            minX, maxY,
-            maxX, minY,
-            maxX, maxY,
+            min, min,
+            max, min,
+            min, max,
+            min, max,
+            max, min,
+            max, max,
         ]);
 
         const buffer = gl.createBuffer();
@@ -197,16 +197,30 @@ export class Scope {
         const data = textures[index].data;
         this.textureSizeUniform.set(textures[index].size);
 
-        gl.clearColor(data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255);
+        gl.clearColor(
+            data[0] / 255,
+            data[1] / 255,
+            data[2] / 255,
+            data[3] / 255,
+        );
 
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, data.length / 4, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-                      data);
+        gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            data.length / 4,
+            1,
+            0,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            data,
+        );
     }
 
     private initState(): void {
-        this.setCenter(new Vec2(0.136, 0.391));
+        this.setCenter(new Vec2(0.129, 0.235));
+        this.setSeed(new Vec2(-0.786, 0.154));
         this.setZoom(2.5);
-        this.setSeed(new Vec2(-0.904, 0.242));
         this.setTexture(0);
 
         this.maxIterationCountUniform.set(150);
