@@ -31,6 +31,9 @@ export class Scope {
     constructor(domElement: HTMLElement) {
         this.container = domElement;
         this.canvas = document.createElement('canvas');
+        domElement.appendChild(this.canvas);
+
+        window.addEventListener('resize', this.resetSize);
 
         const gl = this.canvas.getContext('webgl') as WebGLRenderingContext;
         const program = gl.createProgram() as WebGLProgram;
@@ -51,16 +54,13 @@ export class Scope {
         this.seed = new Vec2(0, 0);
         this.zoom = 0;
 
-        domElement.appendChild(this.canvas);
-
+        this.width = 0;
+        this.height = 0;
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
+        this.resetSize();
 
-        this.width = this.canvas.width = this.canvas.offsetWidth;
-        this.height = this.canvas.height = this.canvas.offsetHeight;
-
-        this.initWebGl();
-        this.initRectangle();
+        this.initGeometry();
         this.initState();
         this.initHandlers();
 
@@ -124,11 +124,20 @@ export class Scope {
             .add(this.center);
     }
 
-    private initWebGl(): void {
-        const { gl } = this;
+    public resetSize = () => {
+        const { gl, canvas, container } = this;
 
-        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        gl.viewport(0, 0, width, height);
+        this.aspectRatioUniform.set(width / height);
+
+        this.width = width;
+        this.height = height;
     }
 
     private initShaders(): void {
@@ -148,7 +157,7 @@ export class Scope {
         gl.useProgram(program);
     }
 
-    private initRectangle(): void {
+    private initGeometry(): void {
         const { gl } = this;
 
         const minX = -3;
@@ -201,7 +210,6 @@ export class Scope {
         this.setTexture(0);
 
         this.maxIterationCountUniform.set(150);
-        this.aspectRatioUniform.set(this.width / this.height);
     }
 
     private initHandlers(): void {
