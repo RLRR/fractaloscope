@@ -10,11 +10,11 @@ export class MouseZoom {
     }
 
     private onWheel = (e: MouseWheelEvent): void => {
-        const delta = -e.deltaY;
-        const zoomPoint = new Vec2(e.clientX, e.clientY);
+        e.preventDefault();
 
+        const zoomPoint = new Vec2(e.clientX, e.clientY);
         const pointBeforeZoom = this.scope.unproject(zoomPoint);
-        this.scope.setZoom(this.scope.getZoom() + delta / 100);
+        this.scope.setZoom(this.scope.getZoom() + this.getDelta(e));
         const pointAfterZoom = this.scope.unproject(zoomPoint);
 
         const newCenter = this.scope.getCenter()
@@ -22,5 +22,17 @@ export class MouseZoom {
             .sub(pointAfterZoom);
 
         this.scope.setCenter(newCenter);
+    }
+
+    private getDelta(e: MouseWheelEvent): number {
+        if (e.ctrlKey) {
+            return -e.deltaY * 0.025;
+        }
+
+        if (e.deltaMode === 1) {
+            return -e.deltaY * 0.25;
+        }
+
+        return -e.deltaY * 0.0025;
     }
 }
