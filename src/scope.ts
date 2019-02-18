@@ -124,7 +124,7 @@ export class Scope {
             .add(this.center);
     }
 
-    public resetSize = () => {
+    public resetSize = (): void => {
         const { gl, canvas, container } = this;
 
         const width = container.clientWidth;
@@ -204,9 +204,9 @@ export class Scope {
     }
 
     private initState(): void {
-        this.setCenter(new Vec2(0, 0));
-        this.setZoom(-2);
-        this.setSeed(new Vec2(0.156, 0.8));
+        this.setCenter(new Vec2(0.136, 0.391));
+        this.setZoom(2.5);
+        this.setSeed(new Vec2(-0.904, 0.242));
         this.setTexture(0);
 
         this.maxIterationCountUniform.set(150);
@@ -218,10 +218,10 @@ export class Scope {
         new MouseInteraction(this);
     }
 
-    private render() {
+    private render = (): void => {
         const { gl } = this;
 
-        requestAnimationFrame(this.render.bind(this));
+        requestAnimationFrame(this.render);
 
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, 6);

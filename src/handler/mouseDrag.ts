@@ -10,18 +10,13 @@ export class MouseDrag {
     constructor(scope: Scope) {
         this.scope = scope;
 
-        this.onMouseUp = this.onMouseUp.bind(this);
-        this.onMouseDown = this.onMouseDown.bind(this);
-        this.onMouseMove = this.onMouseMove.bind(this);
-
         this.mouseDownCenter = new Vec2(0, 0);
         this.mouseDownPoint = new Vec2(0, 0);
 
-        this.scope.getContainer()
-            .addEventListener('mousedown', this.onMouseDown);
+        this.scope.getContainer().addEventListener('mousedown', this.onMouseDown);
     }
 
-    private onMouseDown(e: MouseEvent): void {
+    private onMouseDown = (e: MouseEvent): void => {
         if (e.which !== 1) {
             return;
         }
@@ -33,7 +28,7 @@ export class MouseDrag {
         document.addEventListener('mouseup', this.onMouseUp);
     }
 
-    private onMouseUp(e: MouseEvent): void {
+    private onMouseUp = (e: MouseEvent): void => {
         if (e.which !== 1) {
             return;
         }
@@ -42,7 +37,7 @@ export class MouseDrag {
         document.removeEventListener('mouseup', this.onMouseUp);
     }
 
-    private onMouseMove(e: MouseEvent): void {
+    private onMouseMove = (e: MouseEvent): void => {
         const startPoint = this.scope.unproject(this.mouseDownPoint);
         const point = this.scope.unproject(new Vec2(e.clientX, e.clientY));
 

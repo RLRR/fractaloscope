@@ -6,14 +6,10 @@ export class MouseZoom {
 
     constructor(scope: Scope) {
         this.scope = scope;
-
-        this.onWheel = this.onWheel.bind(this);
-
-        this.scope.getContainer()
-            .addEventListener('wheel', this.onWheel);
+        this.scope.getContainer().addEventListener('wheel', this.onWheel);
     }
 
-    private onWheel(e: MouseWheelEvent): void {
+    private onWheel = (e: MouseWheelEvent): void => {
         const delta = -e.deltaY;
         const zoomPoint = new Vec2(e.clientX, e.clientY);
 

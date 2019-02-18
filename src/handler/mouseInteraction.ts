@@ -7,13 +7,6 @@ export class MouseInteraction {
 
     constructor(scope: Scope) {
         this.scope = scope;
-
-        this.onMouseDown = this.onMouseDown.bind(this);
-        this.disregard = this.disregard.bind(this);
-        this.startInteraction = this.startInteraction.bind(this);
-        this.stopInteracion = this.stopInteracion.bind(this);
-        this.interact = this.interact.bind(this);
-
         this.startPoint = new Vec2(0, 0);
 
         this.startListening();
@@ -27,21 +20,21 @@ export class MouseInteraction {
         this.scope.getContainer().removeEventListener('mousedown', this.onMouseDown);
     }
 
-    private onMouseDown(): void {
+    private onMouseDown = (): void => {
         this.stopListening();
 
         document.addEventListener('mousemove', this.disregard);
         document.addEventListener('mouseup', this.startInteraction);
     }
 
-    private disregard(): void {
+    private disregard = (): void => {
         document.removeEventListener('mousemove', this.disregard);
         document.removeEventListener('mouseup', this.startInteraction);
 
         this.startListening();
     }
 
-    private startInteraction(e: MouseEvent): void {
+    private startInteraction = (e: MouseEvent): void => {
         document.removeEventListener('mousemove', this.disregard);
         document.removeEventListener('mouseup', this.startInteraction);
 
@@ -51,14 +44,14 @@ export class MouseInteraction {
         this.startPoint = new Vec2(e.clientX, e.clientY);
     }
 
-    private stopInteracion(): void {
+    private stopInteracion = (): void => {
         document.removeEventListener('mousemove', this.interact);
         document.removeEventListener('mousedown', this.stopInteracion);
 
         this.startListening();
     }
 
-    private interact(e: MouseEvent): void {
+    private interact = (e: MouseEvent): void => {
         const startPoint = this.scope.unprojectSeed(this.startPoint);
         const point = this.scope.unprojectSeed(new Vec2(e.clientX, e.clientY));
 
