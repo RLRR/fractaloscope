@@ -3,8 +3,11 @@ precision highp float;
 uniform vec2 seed;
 uniform int maxIter;
 
-uniform sampler2D texture;
+uniform sampler2D prevTexture;
+uniform sampler2D currTexture;
+
 uniform int textureSize;
+uniform float textureRatio;
 
 varying vec2 coordinates;
 
@@ -36,5 +39,8 @@ void main() {
     float step = 1.0 / float(textureSize);
     level = level * (1.0 - step) + step / 2.0;
 
-    gl_FragColor = texture2D(texture, vec2(level, 0.5));
+    vec4 prevColor = texture2D(prevTexture, vec2(level, 0.5));
+    vec4 currColor = texture2D(currTexture, vec2(level, 0.5));
+
+    gl_FragColor = mix(prevColor, currColor, textureRatio);
 }

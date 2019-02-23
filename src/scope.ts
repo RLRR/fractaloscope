@@ -1,9 +1,12 @@
-import { textures } from './textures';
-import { Vec2 } from './vec2';
+import { MouseInteraction } from './handler/mouseInteraction';
 import { MouseDrag } from './handler/mouseDrag';
 import { MouseZoom } from './handler/mouseZoom';
-import { MouseInteraction } from './handler/mouseInteraction';
+import { getPalette } from './palettes';
 import { Uniform } from './uniform';
+import { clamp } from './utils';
+import { Vec2 } from './vec2';
+
+import { textureSize, paletteDuration, paletteChangeDuration } from './constants';
 
 import vertGlsl from './shaders/vert.glsl';
 import fragGlsl from './shaders/frag.glsl';
@@ -13,13 +16,21 @@ export class Scope {
     private canvas: HTMLCanvasElement;
     private gl: WebGLRenderingContext;
     private program: WebGLProgram;
+    private textures: [WebGLTexture, WebGLTexture];
 
     private seedUniform: Uniform;
     private centerUniform: Uniform;
     private scaleUniform: Uniform;
     private aspectRatioUniform: Uniform;
     private maxIterationCountUniform: Uniform;
+
+    private textureRatioUniform: Uniform;
     private textureSizeUniform: Uniform;
+    private prevTextureUniform: Uniform;
+    private currTextureUniform: Uniform;
+
+    private paletteSetTime: number;
+    private currTextureIndex: 0 | 1;
 
     private width: number;
     private height: number;
@@ -37,9 +48,12 @@ export class Scope {
 
         const gl = this.canvas.getContext('webgl') as WebGLRenderingContext;
         const program = gl.createProgram() as WebGLProgram;
+        const texture0 = gl.createTexture() as WebGLTexture;
+        const texture1 = gl.createTexture() as WebGLTexture;
 
         this.gl = gl;
         this.program = program;
+        this.textures = [texture0, texture1];
 
         this.initShaders();
 
@@ -48,7 +62,16 @@ export class Scope {
         this.scaleUniform = new Uniform(gl, program, 'scale', '1f');
         this.aspectRatioUniform = new Uniform(gl, program, 'aspectRatio', '1f');
         this.maxIterationCountUniform = new Uniform(gl, program, 'maxIter', '1i');
+        this.textureRatioUniform = new Uniform(gl, program, 'textureRatio', '1f');
         this.textureSizeUniform = new Uniform(gl, program, 'textureSize', '1i');
+        this.prevTextureUniform = new Uniform(gl, program, 'prevTexture', '1i');
+        this.currTextureUniform = new Uniform(gl, program, 'currTexture', '1i');
+
+        this.paletteSetTime = Date.now();
+        this.currTextureIndex = 0;
+
+        this.switchPalette();
+        window.setInterval(this.switchPalette, paletteDuration);
 
         this.center = new Vec2(0, 0);
         this.seed = new Vec2(0, 0);
@@ -61,6 +84,7 @@ export class Scope {
         this.resetSize();
 
         this.initGeometry();
+        this.initTextures();
         this.initState();
         this.initHandlers();
 
@@ -159,6 +183,42 @@ export class Scope {
         gl.useProgram(program);
     }
 
+    private initTextures(): void {
+        const pixels = getPalette();
+
+        this.initTexture(0, pixels);
+        this.initTexture(1, pixels);
+
+        this.textureSizeUniform.set(textureSize);
+
+        this.prevTextureUniform.set(0);
+        this.currTextureUniform.set(1);
+    }
+
+    private initTexture(index: number, pixels: Uint8Array): void {
+        const { gl } = this;
+
+        gl.activeTexture(gl.TEXTURE0 + index);
+        gl.bindTexture(gl.TEXTURE_2D, this.textures[index]);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            textureSize,
+            1,
+            0,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            pixels,
+        );
+    }
+
     private initGeometry(): void {
         const { gl } = this;
 
@@ -183,45 +243,37 @@ export class Scope {
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
     }
 
-    private setTexture(index: number): void {
+    private switchPalette = (): void => {
         const { gl } = this;
 
-        const texture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        const currTextureIndex = this.currTextureIndex === 0 ? 1 : 0;
+        const prevTextureIndex = this.currTextureIndex;
 
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-        const data = textures[index].data;
-        this.textureSizeUniform.set(textures[index].size);
-
-        gl.clearColor(
-            data[0] / 255,
-            data[1] / 255,
-            data[2] / 255,
-            data[3] / 255,
-        );
-
+        gl.activeTexture(gl.TEXTURE0 + currTextureIndex);
+        gl.bindTexture(gl.TEXTURE_2D, this.textures[currTextureIndex]);
         gl.texImage2D(
             gl.TEXTURE_2D,
             0,
             gl.RGBA,
-            data.length / 4,
+            textureSize,
             1,
             0,
             gl.RGBA,
             gl.UNSIGNED_BYTE,
-            data,
+            getPalette(),
         );
+
+        this.currTextureUniform.set(currTextureIndex);
+        this.prevTextureUniform.set(prevTextureIndex);
+
+        this.currTextureIndex = currTextureIndex;
+        this.paletteSetTime = Date.now();
     }
 
     private initState(): void {
         this.setCenter(new Vec2(0.129, 0.235));
         this.setSeed(new Vec2(-0.786, 0.154));
         this.setZoom(2.5);
-        this.setTexture(0);
 
         this.maxIterationCountUniform.set(150);
     }
@@ -236,6 +288,11 @@ export class Scope {
         const { gl } = this;
 
         requestAnimationFrame(this.render);
+
+        const paletteSetElapsedTime = Date.now() - this.paletteSetTime;
+        const textureRatio = clamp(paletteSetElapsedTime / paletteChangeDuration, 0, 1);
+
+        this.textureRatioUniform.set(textureRatio);
 
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
