@@ -12,3 +12,12 @@ export function hexToRgb(hex: string): RGBA {
         255,
     ];
 }
+
+export function lerpColors(color1: RGBA, color2: RGBA, ratio: number): RGBA {
+    return [
+        color1[0] * (1 - ratio) + color2[0] * ratio,
+        color1[1] * (1 - ratio) + color2[1] * ratio,
+        color1[2] * (1 - ratio) + color2[2] * ratio,
+        color1[3] * (1 - ratio) + color2[3] * ratio,
+    ];
+}

@@ -3,7 +3,7 @@ import { MouseDrag } from './handler/mouseDrag';
 import { MouseZoom } from './handler/mouseZoom';
 import { getPalette } from './palettes';
 import { Uniform } from './uniform';
-import { clamp } from './utils';
+import { clamp, lerpColors } from './utils';
 import { Vec2 } from './vec2';
 
 import { textureSize, paletteDuration, paletteChangeDuration } from './constants';
@@ -31,6 +31,8 @@ export class Scope {
 
     private paletteSetTime: number;
     private currTextureIndex: 0 | 1;
+    private prevPalette: Uint8Array;
+    private currPalette: Uint8Array;
 
     private width: number;
     private height: number;
@@ -69,6 +71,9 @@ export class Scope {
 
         this.paletteSetTime = Date.now();
         this.currTextureIndex = 0;
+
+        this.prevPalette = new Uint8Array(0);
+        this.currPalette = new Uint8Array(0);
 
         this.switchPalette();
         window.setInterval(this.switchPalette, paletteDuration);
@@ -189,6 +194,9 @@ export class Scope {
         this.initTexture(0, pixels);
         this.initTexture(1, pixels);
 
+        this.prevPalette = pixels;
+        this.currPalette = pixels;
+
         this.textureSizeUniform.set(textureSize);
 
         this.prevTextureUniform.set(0);
@@ -249,6 +257,8 @@ export class Scope {
         const currTextureIndex = this.currTextureIndex === 0 ? 1 : 0;
         const prevTextureIndex = this.currTextureIndex;
 
+        const pixels = getPalette();
+
         gl.activeTexture(gl.TEXTURE0 + currTextureIndex);
         gl.bindTexture(gl.TEXTURE_2D, this.textures[currTextureIndex]);
         gl.texImage2D(
@@ -260,11 +270,14 @@ export class Scope {
             0,
             gl.RGBA,
             gl.UNSIGNED_BYTE,
-            getPalette(),
+            pixels,
         );
 
         this.currTextureUniform.set(currTextureIndex);
         this.prevTextureUniform.set(prevTextureIndex);
+
+        this.prevPalette = this.currPalette;
+        this.currPalette = pixels;
 
         this.currTextureIndex = currTextureIndex;
         this.paletteSetTime = Date.now();
@@ -285,7 +298,7 @@ export class Scope {
     }
 
     private render = (): void => {
-        const { gl } = this;
+        const { gl, prevPalette, currPalette } = this;
 
         requestAnimationFrame(this.render);
 
@@ -293,6 +306,19 @@ export class Scope {
         const textureRatio = clamp(paletteSetElapsedTime / paletteChangeDuration, 0, 1);
 
         this.textureRatioUniform.set(textureRatio);
+
+        const clearColor = lerpColors(
+            [prevPalette[0], prevPalette[1], prevPalette[2], prevPalette[3]],
+            [currPalette[0], currPalette[1], currPalette[2], currPalette[3]],
+            textureRatio,
+        );
+
+        gl.clearColor(
+            clearColor[0] / 255,
+            clearColor[1] / 255,
+            clearColor[2] / 255,
+            clearColor[3] / 255,
+        );
 
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
