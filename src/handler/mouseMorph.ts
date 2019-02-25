@@ -1,25 +1,26 @@
 import { Scope } from '../Scope';
 import { Vec2 } from '../vec2';
-import { minX, maxX, maxY, minY } from '../constants';
+import { minSeedX, maxSeedX, minSeedY, maxSeedY } from '../constants';
 
-export class MouseDrag {
+export class MouseMorph {
     private scope: Scope;
 
-    private mouseDownCenter: Vec2;
+    private mouseDownSeed: Vec2;
     private mouseDownPoint: Vec2;
 
     constructor(scope: Scope) {
         this.scope = scope;
 
-        this.mouseDownCenter = new Vec2(0, 0);
+        this.mouseDownSeed = new Vec2(0, 0);
         this.mouseDownPoint = new Vec2(0, 0);
 
         this.scope.getContainer().addEventListener('mousedown', this.onMouseDown);
+        this.scope.getContainer().addEventListener('contextmenu', e => e.preventDefault());
     }
 
     private onMouseDown = (e: MouseEvent): void => {
-        if (e.button === 0 && !e.ctrlKey && !e.metaKey) {
-            this.mouseDownCenter = this.scope.getCenter();
+        if ((e.ctrlKey || e.metaKey) && e.button === 0 || e.button === 1 || e.button === 2) {
+            this.mouseDownSeed = this.scope.getSeed();
             this.mouseDownPoint = new Vec2(e.clientX, e.clientY);
 
             document.addEventListener('mousemove', this.onMouseMove);
@@ -33,13 +34,13 @@ export class MouseDrag {
     }
 
     private onMouseMove = (e: MouseEvent): void => {
-        const startPoint = this.scope.unproject(this.mouseDownPoint);
-        const point = this.scope.unproject(new Vec2(e.clientX, e.clientY));
+        const startPoint = this.scope.unprojectSeed(this.mouseDownPoint);
+        const point = this.scope.unprojectSeed(new Vec2(e.clientX, e.clientY));
 
-        const newCenter = this.mouseDownCenter
+        const newSeed = this.mouseDownSeed
             .sub(point).add(startPoint)
-            .clamp(minX, maxX, minY, maxY);
+            .clamp(minSeedX, maxSeedX, minSeedY, maxSeedY);
 
-        this.scope.setCenter(newCenter);
+        this.scope.setSeed(newSeed);
     }
 }

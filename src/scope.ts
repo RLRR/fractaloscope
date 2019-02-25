@@ -1,4 +1,4 @@
-import { MouseInteraction } from './handler/mouseInteraction';
+import { MouseMorph } from './handler/mouseMorph';
 import { MouseDrag } from './handler/mouseDrag';
 import { MouseZoom } from './handler/mouseZoom';
 import { getPalette } from './palettes';
@@ -300,7 +300,7 @@ export class Scope {
     private initHandlers(): void {
         new MouseDrag(this);
         new MouseZoom(this);
-        new MouseInteraction(this);
+        new MouseMorph(this);
     }
 
     private render = (): void => {
