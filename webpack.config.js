@@ -27,6 +27,7 @@ module.exports = function(env = {}) {
         plugins: [
             new HtmlWebpackPlugin({
                 template: './src/index.html',
+                favicon: './assets/favicon.png',
             }),
         ],
         stats: {
