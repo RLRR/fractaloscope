@@ -1,5 +1,10 @@
 import { Scope } from '../Scope';
 import { Vec2 } from '../vec2';
+import {
+    touchpadScrollZoomSpeed,
+    macFirefoxMouseZoomSpeed,
+    touchpadGestureZoomSpeed,
+} from '../constants';
 
 export class MouseZoom {
     private scope: Scope;
@@ -26,13 +31,13 @@ export class MouseZoom {
 
     private getDelta(e: MouseWheelEvent): number {
         if (e.ctrlKey) {
-            return -e.deltaY * 0.025;
+            return -e.deltaY * touchpadGestureZoomSpeed;
         }
 
         if (e.deltaMode === 1) {
-            return -e.deltaY * 0.25;
+            return -e.deltaY * macFirefoxMouseZoomSpeed;
         }
 
-        return -e.deltaY * 0.0025;
+        return -e.deltaY * touchpadScrollZoomSpeed;
     }
 }
