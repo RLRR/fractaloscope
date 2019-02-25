@@ -167,10 +167,13 @@ export class Scope {
         const width = container.clientWidth;
         const height = container.clientHeight;
 
-        canvas.width = width;
-        canvas.height = height;
+        const scaledWidth = width * window.devicePixelRatio;
+        const scaledHeight = height * window.devicePixelRatio;
 
-        gl.viewport(0, 0, width, height);
+        canvas.width = scaledWidth;
+        canvas.height = scaledHeight;
+
+        gl.viewport(0, 0, scaledWidth, scaledHeight);
         this.aspectRatioUniform.set(width / height);
 
         this.width = width;

@@ -6,6 +6,7 @@ module.exports = function(env = {}) {
         mode: env.production ? 'production' : 'development',
         devServer: {
             port: 3000,
+            host: '0.0.0.0',
             stats: {
                 children: false,
             },
