@@ -6,7 +6,13 @@ import { Uniform } from './uniform';
 import { clamp, lerpColors } from './utils';
 import { Vec2 } from './vec2';
 
-import { textureSize, paletteDuration, paletteChangeDuration } from './constants';
+import {
+    textureSize,
+    paletteDuration,
+    paletteChangeDuration,
+    minX, minY,
+    maxX, maxY,
+} from './constants';
 
 import vertGlsl from './shaders/vert.glsl';
 import fragGlsl from './shaders/frag.glsl';
@@ -230,16 +236,13 @@ export class Scope {
     private initGeometry(): void {
         const { gl } = this;
 
-        const min = -3;
-        const max = 3;
-
         const vertices = new Float32Array([
-            min, min,
-            max, min,
-            min, max,
-            min, max,
-            max, min,
-            max, max,
+            minX, minY,
+            maxX, minY,
+            minX, maxY,
+            minX, maxY,
+            maxX, minY,
+            maxX, maxY,
         ]);
 
         const buffer = gl.createBuffer();

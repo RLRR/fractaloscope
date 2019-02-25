@@ -1,3 +1,5 @@
+import { clamp } from './utils';
+
 export class Vec2 {
     public x: number;
     public y: number;
@@ -17,5 +19,9 @@ export class Vec2 {
 
     mul(scalar: number): Vec2 {
         return new Vec2(this.x * scalar, this.y * scalar);
+    }
+
+    clamp(minX: number, maxX: number, minY: number, maxY: number): Vec2 {
+        return new Vec2(clamp(this.x, minX, maxX), clamp(this.y, minY, maxY));
     }
 }

@@ -1,5 +1,6 @@
 import { Scope } from '../Scope';
 import { Vec2 } from '../vec2';
+import { minSeedX, maxSeedX, minSeedY, maxSeedY } from '../constants';
 
 export class MouseInteraction {
     private scope: Scope;
@@ -55,7 +56,9 @@ export class MouseInteraction {
         const startPoint = this.scope.unprojectSeed(this.startPoint);
         const point = this.scope.unprojectSeed(new Vec2(e.clientX, e.clientY));
 
-        const newSeed = this.scope.getSeed().sub(point).add(startPoint);
+        const newSeed = this.scope.getSeed()
+            .sub(point).add(startPoint)
+            .clamp(minSeedX, maxSeedX, minSeedY, maxSeedY);
 
         this.startPoint = new Vec2(e.clientX, e.clientY);
 

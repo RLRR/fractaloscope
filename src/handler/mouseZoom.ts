@@ -4,7 +4,11 @@ import {
     touchpadScrollZoomSpeed,
     macFirefoxMouseZoomSpeed,
     touchpadGestureZoomSpeed,
+    minX, maxX,
+    minY, maxY,
+    minZoom, maxZoom,
 } from '../constants';
+import { clamp } from '../utils';
 
 export class MouseZoom {
     private scope: Scope;
@@ -19,12 +23,13 @@ export class MouseZoom {
 
         const zoomPoint = new Vec2(e.clientX, e.clientY);
         const pointBeforeZoom = this.scope.unproject(zoomPoint);
-        this.scope.setZoom(this.scope.getZoom() + this.getDelta(e));
+        this.scope.setZoom(clamp(this.scope.getZoom() + this.getDelta(e), minZoom, maxZoom));
         const pointAfterZoom = this.scope.unproject(zoomPoint);
 
         const newCenter = this.scope.getCenter()
             .add(pointBeforeZoom)
-            .sub(pointAfterZoom);
+            .sub(pointAfterZoom)
+            .clamp(minX, maxX, minY, maxY);
 
         this.scope.setCenter(newCenter);
     }

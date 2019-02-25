@@ -1,5 +1,6 @@
 import { Scope } from '../Scope';
 import { Vec2 } from '../vec2';
+import { minX, maxX, maxY, minY } from '../constants';
 
 export class MouseDrag {
     private scope: Scope;
@@ -41,7 +42,9 @@ export class MouseDrag {
         const startPoint = this.scope.unproject(this.mouseDownPoint);
         const point = this.scope.unproject(new Vec2(e.clientX, e.clientY));
 
-        const newCenter = this.mouseDownCenter.sub(point).add(startPoint);
+        const newCenter = this.mouseDownCenter
+            .sub(point).add(startPoint)
+            .clamp(minX, maxX, minY, maxY);
 
         this.scope.setCenter(newCenter);
     }
