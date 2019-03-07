@@ -23,7 +23,6 @@ export class MouseZoom {
         const pointAfterZoom = this.scope.unproject(zoomPoint);
 
         const newCenter = this.scope.getCenter().add(pointBeforeZoom).sub(pointAfterZoom);
-
         this.scope.setCenter(newCenter);
     }
 
