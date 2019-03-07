@@ -11,7 +11,7 @@ import {
     paletteDuration,
     paletteChangeDuration,
     minX, minY,
-    maxX, maxY,
+    maxX, maxY, seedPeriod, seedAmplitude,
 } from './constants';
 
 import vertGlsl from './shaders/vert.glsl';
@@ -130,7 +130,6 @@ export class Scope {
 
     public setSeed(seed: Vec2): void {
         this.seed = seed;
-        this.seedUniform.set(seed.x, seed.y);
     }
 
     public getSeed(): Vec2 {
@@ -147,18 +146,6 @@ export class Scope {
             )
             .mul(1 / Math.pow(2, this.zoom))
             .add(this.center);
-    }
-
-    public unprojectSeed(coords: Vec2): Vec2 {
-        const size = this.getSize();
-        const aspectRatio = size.x / size.y;
-
-        return new Vec2(
-                coords.x / size.x * 2 - 1,
-                ((size.y - coords.y) / size.y * 2 - 1) / aspectRatio,
-            )
-            .mul(1 / Math.pow(2, this.zoom))
-            .add(this.seed);
     }
 
     public resetSize = (): void => {
@@ -304,14 +291,21 @@ export class Scope {
     }
 
     private render = (): void => {
-        const { gl, prevPalette, currPalette } = this;
+        const { gl, prevPalette, currPalette, seed, zoom } = this;
+        const scale = Math.pow(2, zoom);
+        const time = Date.now();
 
         requestAnimationFrame(this.render);
 
-        const paletteSetElapsedTime = Date.now() - this.paletteSetTime;
+        const paletteSetElapsedTime = time - this.paletteSetTime;
         const textureRatio = clamp(paletteSetElapsedTime / paletteChangeDuration, 0, 1);
 
         this.textureRatioUniform.set(textureRatio);
+
+        this.seedUniform.set(
+            seed.x + Math.cos((12 / 13) * time / seedPeriod) * seedAmplitude / scale,
+            seed.y + 0.5 * Math.sin(time / seedPeriod) * seedAmplitude / scale,
+        );
 
         const clearColor = lerpColors(
             [prevPalette[0], prevPalette[1], prevPalette[2], prevPalette[3]],

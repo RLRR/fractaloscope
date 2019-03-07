@@ -1,6 +1,6 @@
 import { Scope } from '../Scope';
 import { Vec2 } from '../vec2';
-import { minSeedX, maxSeedX, minSeedY, maxSeedY } from '../constants';
+import { minSeedX, maxSeedX, minSeedY, maxSeedY, morphSpeed } from '../constants';
 
 export class MouseMorph {
     private scope: Scope;
@@ -34,11 +34,13 @@ export class MouseMorph {
     }
 
     private onMouseMove = (e: MouseEvent): void => {
-        const startPoint = this.scope.unprojectSeed(this.mouseDownPoint);
-        const point = this.scope.unprojectSeed(new Vec2(e.clientX, e.clientY));
+        const startPoint = this.scope.unproject(this.mouseDownPoint);
+        const point = this.scope.unproject(new Vec2(e.clientX, e.clientY));
+
+        const delta = point.sub(startPoint).mul(morphSpeed);
 
         const newSeed = this.mouseDownSeed
-            .sub(point).add(startPoint)
+            .add(delta)
             .clamp(minSeedX, maxSeedX, minSeedY, maxSeedY);
 
         this.scope.setSeed(newSeed);

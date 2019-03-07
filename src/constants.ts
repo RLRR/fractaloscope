@@ -7,6 +7,10 @@ export const touchpadScrollZoomSpeed = 0.0025;
 export const touchpadGestureZoomSpeed = 0.025;
 export const macFirefoxMouseZoomSpeed = 0.25;
 
+export const morphSpeed = 0.5;
+export const seedPeriod = 1000;
+export const seedAmplitude = 0.01;
+
 export const minX = -3;
 export const maxX = +3;
 export const minY = -2;
