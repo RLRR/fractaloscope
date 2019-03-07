@@ -1,3 +1,5 @@
+import { Vec2 } from "./vec2";
+
 type RGBA = [number, number, number, number];
 
 export function clamp(value: number, min: number, max: number): number {
@@ -26,4 +28,18 @@ export function getPeakVolume(analyser: AnalyserNode): number {
     const array = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteTimeDomainData(array);
     return Math.abs(Math.max(...array) - 128) / 128;
+}
+
+export function getDistance(points: [Vec2, Vec2]): number {
+    const dx = points[1].x - points[0].x;
+    const dy = points[1].y - points[0].y;
+
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+export function getMidpoint(points: [Vec2, Vec2]): Vec2 {
+    return new Vec2(
+        (points[0].x + points[1].x) / 2,
+        (points[0].y + points[1].y) / 2,
+    );
 }

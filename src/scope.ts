@@ -1,7 +1,9 @@
 import { clamp, lerpColors, getPeakVolume } from './utils';
-import { MouseMorph } from './handler/mouseMorph';
-import { MouseDrag } from './handler/mouseDrag';
-import { MouseZoom } from './handler/mouseZoom';
+import { MouseMorph } from './handlers/mouseMorph';
+import { MouseDrag } from './handlers/mouseDrag';
+import { MouseZoom } from './handlers/mouseZoom';
+import { TouchDrag } from './handlers/touchDrag';
+import { TouchZoom } from './handlers/touchZoom';
 import { SlidingWindow } from './slidingWindow';
 import { getPalette } from './palettes';
 import { Uniform } from './uniform';
@@ -18,6 +20,9 @@ import {
     minIterationLimit,
     maxIterationLimit,
     volumeWindowSize,
+    minSeedX, maxSeedX,
+    minSeedY, maxSeedY,
+    minZoom, maxZoom,
 } from './constants';
 
 import vertGlsl from './shaders/vert.glsl';
@@ -124,8 +129,8 @@ export class Scope {
     }
 
     public setCenter(center: Vec2): void {
-        this.center = center;
-        this.centerUniform.set(center.x, center.y);
+        this.center = center.clamp(minX, maxX, minY, maxY);
+        this.centerUniform.set(this.center.x, this.center.y);
     }
 
     public getCenter(): Vec2 {
@@ -133,8 +138,8 @@ export class Scope {
     }
 
     public setZoom(zoom: number): void {
-        this.zoom = zoom;
-        this.scaleUniform.set(Math.pow(2, zoom));
+        this.zoom = clamp(zoom, minZoom, maxZoom);
+        this.scaleUniform.set(Math.pow(2, this.zoom));
     }
 
     public getZoom(): number {
@@ -142,7 +147,7 @@ export class Scope {
     }
 
     public setSeed(seed: Vec2): void {
-        this.seed = seed;
+        this.seed = seed.clamp(minSeedX, maxSeedX, minSeedY, maxSeedY);
     }
 
     public getSeed(): Vec2 {
@@ -313,6 +318,8 @@ export class Scope {
         new MouseDrag(this);
         new MouseZoom(this);
         new MouseMorph(this);
+        new TouchDrag(this);
+        new TouchZoom(this);
     }
 
     private initAudio(): void {
