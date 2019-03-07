@@ -21,3 +21,9 @@ export function lerpColors(color1: RGBA, color2: RGBA, ratio: number): RGBA {
         color1[3] * (1 - ratio) + color2[3] * ratio,
     ];
 }
+
+export function getPeakVolume(analyser: AnalyserNode): number {
+    const array = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteTimeDomainData(array);
+    return Math.abs(Math.max(...array) - 128) / 128;
+}

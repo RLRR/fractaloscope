@@ -1,7 +1,7 @@
 precision highp float;
 
 uniform vec2 seed;
-uniform int maxIter;
+uniform int iterationLimit;
 
 uniform sampler2D prevTexture;
 uniform sampler2D currTexture;
@@ -17,7 +17,7 @@ void main() {
     float iterationsCount = 0.0;
 
     for (int i = 0; i < 1000; i++) {
-        if (i >= maxIter) {
+        if (i >= iterationLimit) {
             break;
         }
 
@@ -34,7 +34,7 @@ void main() {
         iterationsCount = float(i);
     }
 
-    float level = iterationsCount / float(maxIter);
+    float level = iterationsCount / float(iterationLimit);
 
     float step = 1.0 / float(textureSize);
     level = level * (1.0 - step) + step / 2.0;

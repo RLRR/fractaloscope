@@ -11,6 +11,10 @@ export const morphSpeed = 0.5;
 export const seedPeriod = 1000;
 export const seedAmplitude = 0.01;
 
+export const maxIterationLimit = 150;
+export const minIterationLimit = 25;
+export const volumeWindowSize = 25;
+
 export const minX = -3;
 export const maxX = +3;
 export const minY = -2;

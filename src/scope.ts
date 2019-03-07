@@ -1,9 +1,10 @@
+import { clamp, lerpColors, getPeakVolume } from './utils';
 import { MouseMorph } from './handler/mouseMorph';
 import { MouseDrag } from './handler/mouseDrag';
 import { MouseZoom } from './handler/mouseZoom';
+import { SlidingWindow } from './slidingWindow';
 import { getPalette } from './palettes';
 import { Uniform } from './uniform';
-import { clamp, lerpColors } from './utils';
 import { Vec2 } from './vec2';
 
 import {
@@ -11,7 +12,12 @@ import {
     paletteDuration,
     paletteChangeDuration,
     minX, minY,
-    maxX, maxY, seedPeriod, seedAmplitude,
+    maxX, maxY,
+    seedPeriod,
+    seedAmplitude,
+    minIterationLimit,
+    maxIterationLimit,
+    volumeWindowSize,
 } from './constants';
 
 import vertGlsl from './shaders/vert.glsl';
@@ -24,11 +30,15 @@ export class Scope {
     private program: WebGLProgram;
     private textures: [WebGLTexture, WebGLTexture];
 
+    private audioElement: HTMLAudioElement;
+    private analyser?: AnalyserNode;
+    private volumeWindow: SlidingWindow;
+
     private seedUniform: Uniform;
     private centerUniform: Uniform;
     private scaleUniform: Uniform;
     private aspectRatioUniform: Uniform;
-    private maxIterationCountUniform: Uniform;
+    private iterationLimitUniform: Uniform;
 
     private textureRatioUniform: Uniform;
     private textureSizeUniform: Uniform;
@@ -47,7 +57,7 @@ export class Scope {
     private seed: Vec2;
     private zoom: number;
 
-    constructor(domElement: HTMLElement) {
+    constructor(domElement: HTMLElement, audioElement: HTMLAudioElement) {
         this.container = domElement;
         this.canvas = document.createElement('canvas');
         domElement.appendChild(this.canvas);
@@ -63,13 +73,16 @@ export class Scope {
         this.program = program;
         this.textures = [texture0, texture1];
 
+        this.audioElement = audioElement;
+        this.volumeWindow = new SlidingWindow(volumeWindowSize);
+
         this.initShaders();
 
         this.seedUniform = new Uniform(gl, program, 'seed', '2f');
         this.centerUniform = new Uniform(gl, program, 'center', '2f');
         this.scaleUniform = new Uniform(gl, program, 'scale', '1f');
         this.aspectRatioUniform = new Uniform(gl, program, 'aspectRatio', '1f');
-        this.maxIterationCountUniform = new Uniform(gl, program, 'maxIter', '1i');
+        this.iterationLimitUniform = new Uniform(gl, program, 'iterationLimit', '1i');
         this.textureRatioUniform = new Uniform(gl, program, 'textureRatio', '1f');
         this.textureSizeUniform = new Uniform(gl, program, 'textureSize', '1i');
         this.prevTextureUniform = new Uniform(gl, program, 'prevTexture', '1i');
@@ -165,6 +178,18 @@ export class Scope {
 
         this.width = width;
         this.height = height;
+    }
+
+    public playSound(): void {
+        if (this.analyser === undefined) {
+            this.initAudio();
+        }
+
+        this.audioElement.play();
+    }
+
+    public pauseSound(): void {
+        this.audioElement.pause();
     }
 
     private initShaders(): void {
@@ -281,7 +306,7 @@ export class Scope {
         this.setSeed(new Vec2(-0.786, 0.154));
         this.setZoom(2.5);
 
-        this.maxIterationCountUniform.set(150);
+        this.iterationLimitUniform.set(150);
     }
 
     private initHandlers(): void {
@@ -290,22 +315,51 @@ export class Scope {
         new MouseMorph(this);
     }
 
+    private initAudio(): void {
+        const ctx = new window.AudioContext();
+        const analyser = ctx.createAnalyser();
+        const source = ctx.createMediaElementSource(this.audioElement);
+
+        source.connect(analyser);
+        analyser.connect(ctx.destination);
+
+        this.analyser = analyser;
+    }
+
     private render = (): void => {
-        const { gl, prevPalette, currPalette, seed, zoom } = this;
-        const scale = Math.pow(2, zoom);
-        const time = Date.now();
+        const { gl } = this;
 
         requestAnimationFrame(this.render);
 
-        const paletteSetElapsedTime = time - this.paletteSetTime;
+        this.updateIterationLimit();
+        this.updateTextureRatio();
+        this.updateSeed();
+
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+
+    private updateIterationLimit(): void {
+        if (this.analyser === undefined) {
+            return;
+        }
+
+        this.volumeWindow.push(getPeakVolume(this.analyser));
+
+        const volume = this.volumeWindow.getMean();
+
+        this.iterationLimitUniform.set(
+            maxIterationLimit - volume * (maxIterationLimit - minIterationLimit),
+        );
+    }
+
+    private updateTextureRatio(): void {
+        const { gl, prevPalette, currPalette } = this;
+
+        const paletteSetElapsedTime = Date.now() - this.paletteSetTime;
         const textureRatio = clamp(paletteSetElapsedTime / paletteChangeDuration, 0, 1);
 
         this.textureRatioUniform.set(textureRatio);
-
-        this.seedUniform.set(
-            seed.x + Math.cos((12 / 13) * time / seedPeriod) * seedAmplitude / scale,
-            seed.y + 0.5 * Math.sin(time / seedPeriod) * seedAmplitude / scale,
-        );
 
         const clearColor = lerpColors(
             [prevPalette[0], prevPalette[1], prevPalette[2], prevPalette[3]],
@@ -319,8 +373,16 @@ export class Scope {
             clearColor[2] / 255,
             clearColor[3] / 255,
         );
+    }
 
-        gl.clear(gl.COLOR_BUFFER_BIT);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+    private updateSeed(): void {
+        const { seed, zoom } = this;
+        const scale = Math.pow(2, zoom);
+        const time = Date.now();
+
+        this.seedUniform.set(
+            seed.x + Math.cos((12 / 13) * time / seedPeriod) * seedAmplitude / scale,
+            seed.y + 0.5 * Math.sin(time / seedPeriod) * seedAmplitude / scale,
+        );
     }
 }

@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 module.exports = function(env = {}) {
@@ -30,9 +31,13 @@ module.exports = function(env = {}) {
                 template: './src/index.html',
                 favicon: './assets/favicon.png',
             }),
+            new CopyWebpackPlugin(['assets']),
         ],
         stats: {
             children: false,
+        },
+        performance: {
+            hints: false,
         },
     };
 };
