@@ -1,4 +1,4 @@
-import { fingersAreTooClose, getMidpoint } from '../utils';
+import { fingersAreTooClose, getMidpoint, getTouchPoints } from '../utils';
 import { Scope } from '../Scope';
 import { Vec2 } from '../vec2';
 
@@ -60,9 +60,6 @@ export class TouchDrag {
             return new Vec2(e.touches[0].clientX, e.touches[0].clientY);
         }
 
-        return getMidpoint([
-            new Vec2(e.touches[0].clientX, e.touches[0].clientY),
-            new Vec2(e.touches[1].clientX, e.touches[1].clientY),
-        ]);
+        return getMidpoint(getTouchPoints(e));
     }
 }

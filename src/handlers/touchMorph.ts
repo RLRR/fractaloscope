@@ -1,13 +1,15 @@
 import { Vec2 } from '../vec2';
 import { Scope } from '../Scope';
 import { morphSpeed } from '../constants';
-import { getMidpoint, fingersAreTooClose } from '../utils';
+import { getMidpoint, fingersAreTooClose, getTouchPoints, isZoomGesture } from '../utils';
 
 export class TouchMorph {
     private scope: Scope;
 
     private touchStartSeed: Vec2;
     private touchStartPoint: Vec2;
+
+    private prevTouchPoints?: [Vec2, Vec2];
 
     private isActive: boolean;
 
@@ -24,34 +26,39 @@ export class TouchMorph {
         this.scope.getContainer().addEventListener('touchmove', this.handle);
     }
 
-    private startStop(e: TouchEvent): void {
-        if (this.canRun(e) && !this.isActive) {
+    private startOrStop(e: TouchEvent): void {
+        const touchPoints = e.touches.length === 2
+            ? getTouchPoints(e)
+            : undefined;
+
+        const isMorph = this.prevTouchPoints === undefined
+            || touchPoints === undefined
+            || !isZoomGesture(this.prevTouchPoints, touchPoints);
+
+        if (this.canRun(e) && isMorph && !this.isActive) {
             this.touchStartSeed = this.scope.getSeed();
-            this.touchStartPoint = getMidpoint([
-                new Vec2(e.touches[0].clientX, e.touches[0].clientY),
-                new Vec2(e.touches[1].clientX, e.touches[1].clientY),
-            ]);
+            this.touchStartPoint = getMidpoint(getTouchPoints(e));
 
             this.isActive = true;
-        } else if (!this.canRun(e) && this.isActive) {
+        } else if ((!this.canRun(e) || !isMorph) && this.isActive) {
             this.isActive = false;
+            this.prevTouchPoints = undefined;
         }
+
+        this.prevTouchPoints = touchPoints;
     }
 
     private handle = (e: TouchEvent): void => {
         e.preventDefault();
 
-        this.startStop(e);
+        this.startOrStop(e);
 
         if (!this.isActive) {
             return;
         }
 
         const startPoint = this.scope.unproject(this.touchStartPoint);
-        const point = this.scope.unproject(getMidpoint([
-            new Vec2(e.touches[0].clientX, e.touches[0].clientY),
-            new Vec2(e.touches[1].clientX, e.touches[1].clientY),
-        ]));
+        const point = this.scope.unproject(getMidpoint(getTouchPoints(e)));
 
         const delta = point.sub(startPoint).mul(morphSpeed);
         const newSeed = this.touchStartSeed.add(delta);

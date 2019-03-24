@@ -45,6 +45,13 @@ export function getMidpoint(points: [Vec2, Vec2]): Vec2 {
     );
 }
 
+export function getTouchPoints(e: TouchEvent): [Vec2, Vec2] {
+    return [
+        new Vec2(e.touches[0].clientX, e.touches[0].clientY),
+        new Vec2(e.touches[1].clientX, e.touches[1].clientY),
+    ];
+}
+
 export function fingersAreTooClose(e: TouchEvent): boolean {
     if (e.touches.length !== 2) {
         return false;
@@ -56,4 +63,18 @@ export function fingersAreTooClose(e: TouchEvent): boolean {
     ]);
 
     return distance < minFingerDistance;
+}
+
+export function isZoomGesture(
+    prevPoints: [Vec2, Vec2],
+    currPoints: [Vec2, Vec2],
+): boolean {
+    const midpointDistance = getDistance([
+        getMidpoint(prevPoints),
+        getMidpoint(currPoints),
+    ]);
+
+    const distance = Math.abs(getDistance(prevPoints) - getDistance(currPoints));
+
+    return distance > midpointDistance;
 }

@@ -1,12 +1,14 @@
 import { Scope } from '../Scope';
 import { Vec2 } from '../vec2';
-import { getDistance, getMidpoint, fingersAreTooClose } from '../utils';
+import { getDistance, getMidpoint, fingersAreTooClose, getTouchPoints, isZoomGesture } from '../utils';
 
 export class TouchZoom {
     private scope: Scope;
 
     private touchStartZoom: number;
     private touchStartPoints: [Vec2, Vec2];
+
+    private prevTouchPoints?: [Vec2, Vec2];
 
     private isActive: boolean;
 
@@ -23,34 +25,37 @@ export class TouchZoom {
         this.scope.getContainer().addEventListener('touchmove', this.handle);
     }
 
-    private startStop(e: TouchEvent): void {
-        if (this.canRun(e) && !this.isActive) {
-            this.touchStartPoints = [
-                new Vec2(e.touches[0].clientX, e.touches[0].clientY),
-                new Vec2(e.touches[1].clientX, e.touches[1].clientY),
-            ];
+    private startOrStop(e: TouchEvent): void {
+        const touchPoints = e.touches.length === 2
+            ? getTouchPoints(e)
+            : undefined;
 
+        const isZoom = this.prevTouchPoints === undefined
+            || touchPoints === undefined
+            || isZoomGesture(this.prevTouchPoints, touchPoints);
+
+        if (this.canRun(e) && isZoom && !this.isActive) {
+            this.touchStartPoints = getTouchPoints(e);
             this.touchStartZoom = this.scope.getZoom();
-
             this.isActive = true;
-        } else if (!this.canRun(e) && this.isActive) {
+        } else if ((!this.canRun(e) || !isZoom) && this.isActive) {
             this.isActive = false;
+            this.prevTouchPoints = undefined;
         }
+
+        this.prevTouchPoints = touchPoints;
     }
 
     private handle = (e: TouchEvent): void => {
         e.preventDefault();
 
-        this.startStop(e);
+        this.startOrStop(e);
 
         if (!this.isActive) {
             return;
         }
 
-        const touchMovePoints: [Vec2, Vec2] = [
-            new Vec2(e.touches[0].clientX, e.touches[0].clientY),
-            new Vec2(e.touches[1].clientX, e.touches[1].clientY),
-        ];
+        const touchMovePoints: [Vec2, Vec2] = getTouchPoints(e);
 
         const startDistance = getDistance(this.touchStartPoints);
         const currentDistance = getDistance(touchMovePoints);
