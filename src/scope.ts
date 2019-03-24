@@ -1,5 +1,6 @@
 import { clamp, lerpColors, getPeakVolume } from './utils';
 import { GestureZoom } from './handlers/gestureZoom';
+import { TouchMorph } from './handlers/touchMorph';
 import { MouseMorph } from './handlers/mouseMorph';
 import { MouseDrag } from './handlers/mouseDrag';
 import { MouseZoom } from './handlers/mouseZoom';
@@ -321,6 +322,7 @@ export class Scope {
         new MouseMorph(this);
         new TouchDrag(this);
         new TouchZoom(this);
+        new TouchMorph(this);
         new GestureZoom(this);
     }
 

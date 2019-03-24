@@ -45,7 +45,7 @@ export class MouseMorph {
 
         const delta = point.sub(startPoint).mul(morphSpeed);
 
-        const newSeed = this.mouseDownSeed.add(delta)
+        const newSeed = this.mouseDownSeed.add(delta);
 
         this.scope.setSeed(newSeed);
     }

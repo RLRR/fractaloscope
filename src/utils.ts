@@ -1,4 +1,5 @@
-import { Vec2 } from "./vec2";
+import { Vec2 } from './vec2';
+import { minFingerDistance } from './constants';
 
 type RGBA = [number, number, number, number];
 
@@ -42,4 +43,17 @@ export function getMidpoint(points: [Vec2, Vec2]): Vec2 {
         (points[0].x + points[1].x) / 2,
         (points[0].y + points[1].y) / 2,
     );
+}
+
+export function fingersAreTooClose(e: TouchEvent): boolean {
+    if (e.touches.length !== 2) {
+        return false;
+    }
+
+    const distance = getDistance([
+        new Vec2(e.touches[0].clientX, e.touches[0].clientY),
+        new Vec2(e.touches[1].clientX, e.touches[1].clientY),
+    ]);
+
+    return distance < minFingerDistance;
 }

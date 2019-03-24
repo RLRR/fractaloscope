@@ -27,3 +27,5 @@ export const maxSeedY = +1;
 
 export const minZoom = -4;
 export const maxZoom = 16;
+
+export const minFingerDistance = 100;

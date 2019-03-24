@@ -1,6 +1,6 @@
 import { Scope } from '../Scope';
 import { Vec2 } from '../vec2';
-import { getDistance, getMidpoint } from '../utils';
+import { getDistance, getMidpoint, fingersAreTooClose } from '../utils';
 
 export class TouchZoom {
     private scope: Scope;
@@ -8,44 +8,42 @@ export class TouchZoom {
     private touchStartZoom: number;
     private touchStartPoints: [Vec2, Vec2];
 
+    private isActive: boolean;
+
     constructor(scope: Scope) {
         this.scope = scope;
 
         this.touchStartPoints = [new Vec2(0, 0), new Vec2(0, 0)];
         this.touchStartZoom = 0;
 
-        this.scope.getContainer().addEventListener('touchstart', this.onTouchStart);
+        this.isActive = false;
+
+        this.scope.getContainer().addEventListener('touchstart', this.handle);
+        this.scope.getContainer().addEventListener('touchend', this.handle);
+        this.scope.getContainer().addEventListener('touchmove', this.handle);
     }
 
-    private onTouchStart = (e: TouchEvent): void => {
-        e.preventDefault();
+    private startStop(e: TouchEvent): void {
+        if (this.canRun(e) && !this.isActive) {
+            this.touchStartPoints = [
+                new Vec2(e.touches[0].clientX, e.touches[0].clientY),
+                new Vec2(e.touches[1].clientX, e.touches[1].clientY),
+            ];
 
-        if (e.touches.length !== 2) {
-            return;
+            this.touchStartZoom = this.scope.getZoom();
+
+            this.isActive = true;
+        } else if (!this.canRun(e) && this.isActive) {
+            this.isActive = false;
         }
-
-        this.touchStartPoints = [
-            new Vec2(e.touches[0].clientX, e.touches[0].clientY),
-            new Vec2(e.touches[1].clientX, e.touches[1].clientY),
-        ];
-
-        this.touchStartZoom = this.scope.getZoom();
-
-        document.addEventListener('touchmove', this.onTouchMove);
-        document.addEventListener('touchend', this.onTouchEnd);
     }
 
-    private onTouchEnd = (e: TouchEvent): void => {
+    private handle = (e: TouchEvent): void => {
         e.preventDefault();
 
-        document.removeEventListener('touchmove', this.onTouchMove);
-        document.removeEventListener('touchend', this.onTouchEnd);
-    }
+        this.startStop(e);
 
-    private onTouchMove = (e: TouchEvent): void => {
-        e.preventDefault();
-
-        if (e.touches.length !== 2) {
+        if (!this.isActive) {
             return;
         }
 
@@ -65,5 +63,9 @@ export class TouchZoom {
         const midpointAfterZoom = this.scope.unproject(midpoint);
 
         this.scope.setCenter(this.scope.getCenter().add(midpointBeforeZoom).sub(midpointAfterZoom));
+    }
+
+    private canRun(e: TouchEvent): boolean {
+        return e.touches.length === 2 && !fingersAreTooClose(e);
     }
 }
