@@ -28,9 +28,13 @@
                 position: absolute;
                 left: 10px;
                 bottom: 10px;
+                right: 40px;
                 pointer-events: none;
             }
-            .instructions.visible {
+            .desktop .instructions.mouse {
+                display: block;
+            }
+            .mobile .instructions.touch {
                 display: block;
             }
 
@@ -41,6 +45,7 @@
                 color: #ccc;
                 font-family: Helvetica, Arial, sans-serif;
                 padding: 5px 10px 5px 3px;
+                margin-top: 10px;
                 margin-right: 10px;
                 font-size: 14px;
                 transition: opacity 1s;
@@ -49,47 +54,60 @@
                 opacity: 0;
             }
 
-            .icon {
+            .instruction img {
                 vertical-align: middle;
             }
-            .mouse .icon {
+            .mouse img {
                 width: 40px;
             }
-            .touch .icon {
+            .touch img {
                 width: 30px;
             }
-            .icon.wheel {
+            .mouse .zoom img {
                 margin: 0 -5px 0 -2px;
             }
-            .icon.pinch {
+            .touch .zoom img {
                 margin-right: 2px;
+            }
+
+            .sound-button {
+                position: absolute;
+                right: 10px;
+                bottom: 10px;
+                background-color: #111;
+                border-radius: 10px;
+                padding: 10px;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .desktop .sound-button img {
+                width: 30px;
+            }
+            .mobile .sound-button img {
+                width: 20px;
+            }
+            .sound-button img.hidden {
+                display: none;
             }
         </style>
     </head>
     <body>
         <div class="display"></div>
         <div class="instructions mouse">
-            <div class="instruction drag">
-                 <img class="icon" src="mouse-left.svg"> to drag
-            </div>
-            <div class="instruction morph">
-                <img class="icon" src="mouse-right.svg"> to morph
-            </div>
-            <div class="instruction zoom">
-                <img class="icon wheel" src="mouse-wheel.svg"> to zoom
-            </div>
+            <div class="instruction drag"><img src="mouse-left.svg"> to drag</div>
+            <div class="instruction morph"><img src="mouse-right.svg"> to morph</div>
+            <div class="instruction zoom"><img src="mouse-wheel.svg"> to zoom</div>
         </div>
         <div class="instructions touch">
-            <div class="instruction drag">
-                <img class="icon" src="touch-one.svg"> to drag
-            </div>
-            <div class="instruction morph">
-                <img class="icon" src="touch-two.svg"> to morph
-            </div>
-            <div class="instruction zoom">
-                <img class="icon pinch" src="touch-pinch.svg"> to zoom
-            </div>
+            <div class="instruction drag"><img src="touch-one.svg"> to drag</div>
+            <div class="instruction morph"><img src="touch-two.svg"> to morph</div>
+            <div class="instruction zoom"><img src="touch-pinch.svg"> to zoom</div>
         </div>
-        <audio class="sound" loop src="arctic-neon.mp3"></audio>
+        <div class="sound-button">
+            <img class="on hidden" src="sound-on.svg">
+            <img class="off" src="sound-off.svg">
+        </div>
+        <audio class="audio" loop src="arctic-neon.mp3"></audio>
     </body>
 </html>

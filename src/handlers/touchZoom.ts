@@ -1,6 +1,12 @@
 import { Scope } from '../Scope';
 import { Vec2 } from '../vec2';
-import { getDistance, getMidpoint, fingersAreTooClose, getTouchPoints, isZoomGesture } from '../utils';
+import {
+    getDistance,
+    getMidpoint,
+    fingersAreTooClose,
+    getTouchPoints,
+    isZoomGesture,
+ } from '../utils';
 
 export class TouchZoom {
     private scope: Scope;

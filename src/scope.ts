@@ -192,7 +192,7 @@ export class Scope {
         this.height = height;
     }
 
-    public playSound(): void {
+    public playAudio(): void {
         if (this.analyser === undefined) {
             this.initAudio();
         }
@@ -200,7 +200,7 @@ export class Scope {
         this.audioElement.play();
     }
 
-    public pauseSound(): void {
+    public pauseAudio(): void {
         this.audioElement.pause();
     }
 
