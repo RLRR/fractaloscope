@@ -21,6 +21,10 @@ export class Vec2 {
         return new Vec2(this.x * scalar, this.y * scalar);
     }
 
+    length(): number {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
     clamp(minX: number, maxX: number, minY: number, maxY: number): Vec2 {
         return new Vec2(clamp(this.x, minX, maxX), clamp(this.y, minY, maxY));
     }

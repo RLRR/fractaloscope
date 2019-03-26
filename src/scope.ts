@@ -33,6 +33,9 @@ import fragGlsl from './shaders/frag.glsl';
 export class Scope {
     private container: HTMLElement;
     private canvas: HTMLCanvasElement;
+
+    private eventHandlers: {[key: string]: () => void};
+
     private gl: WebGLRenderingContext;
     private program: WebGLProgram;
     private textures: [WebGLTexture, WebGLTexture];
@@ -107,6 +110,8 @@ export class Scope {
         this.center = new Vec2(0, 0);
         this.seed = new Vec2(0, 0);
         this.zoom = 0;
+
+        this.eventHandlers = {};
 
         this.width = 0;
         this.height = 0;
@@ -197,6 +202,22 @@ export class Scope {
 
     public pauseSound(): void {
         this.audioElement.pause();
+    }
+
+    public on(eventName: string, handler: () => void): void {
+        this.eventHandlers[eventName] = handler;
+    }
+
+    public off(eventName: string): void {
+        delete this.eventHandlers[eventName];
+    }
+
+    public fire(eventName: string): void {
+        const handler = this.eventHandlers[eventName];
+
+        if (handler !== undefined) {
+            handler();
+        }
     }
 
     private initShaders(): void {
@@ -309,9 +330,11 @@ export class Scope {
     }
 
     private initState(): void {
-        this.setCenter(new Vec2(0.129, 0.235));
-        this.setSeed(new Vec2(-0.786, 0.154));
-        this.setZoom(2.5);
+        const isVerticalScreen = this.height > this.width;
+
+        this.setCenter(isVerticalScreen ? new Vec2(0.129, 0.235) : new Vec2(0, 0));
+        this.setSeed(isVerticalScreen ? new Vec2(-0.786, 0.154) : new Vec2(-0.76, 0.136));
+        this.setZoom(isVerticalScreen ? 2 : -0.8);
 
         this.iterationLimitUniform.set(150);
     }

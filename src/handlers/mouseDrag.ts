@@ -23,6 +23,8 @@ export class MouseDrag {
             this.mouseDownCenter = this.scope.getCenter();
             this.mouseDownPoint = new Vec2(e.clientX, e.clientY);
 
+            this.scope.getContainer().classList.add('dragging');
+
             document.addEventListener('mousemove', this.onMouseMove);
             document.addEventListener('mouseup', this.onMouseUp);
         }
@@ -30,6 +32,8 @@ export class MouseDrag {
 
     private onMouseUp = (e: MouseEvent): void => {
         e.preventDefault();
+
+        this.scope.getContainer().classList.remove('dragging');
 
         document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('mouseup', this.onMouseUp);
@@ -44,5 +48,6 @@ export class MouseDrag {
         const newCenter = this.mouseDownCenter.sub(point).add(startPoint);
 
         this.scope.setCenter(newCenter);
+        this.scope.fire('drag');
     }
 }

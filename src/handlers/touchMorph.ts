@@ -64,6 +64,7 @@ export class TouchMorph {
         const newSeed = this.touchStartSeed.add(delta);
 
         this.scope.setSeed(newSeed);
+        this.scope.fire('morph');
     }
 
     private canRun(e: TouchEvent): boolean {

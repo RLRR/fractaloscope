@@ -7,8 +7,8 @@ export const touchpadScrollZoomSpeed = 0.0025;
 export const touchpadGestureZoomSpeed = 0.025;
 export const macFirefoxMouseZoomSpeed = 0.25;
 
-export const morphSpeed = 0.5;
-export const seedPeriod = 1000;
+export const morphSpeed = 0.25;
+export const seedPeriod = 1500;
 export const seedAmplitude = 0.01;
 
 export const maxIterationLimit = 150;

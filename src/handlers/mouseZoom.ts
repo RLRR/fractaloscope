@@ -24,6 +24,7 @@ export class MouseZoom {
 
         const newCenter = this.scope.getCenter().add(pointBeforeZoom).sub(pointAfterZoom);
         this.scope.setCenter(newCenter);
+        this.scope.fire('zoom');
     }
 
     private getDelta(e: MouseWheelEvent): number {

@@ -36,6 +36,7 @@ export class GestureZoom {
 
         const newCenter = this.scope.getCenter().add(pointBeforeZoom).sub(pointAfterZoom);
         this.scope.setCenter(newCenter);
+        this.scope.fire('zoom');
     }
 }
 

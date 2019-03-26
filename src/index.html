@@ -12,14 +12,84 @@
                 overflow: hidden;
             }
 
-            #display {
+            .display {
                 width: 100%;
                 height: 100%;
+            }
+            .display.dragging {
+                cursor: grabbing;
+            }
+            .display.morphing {
+                cursor: move;
+            }
+
+            .instructions {
+                display: none;
+                position: absolute;
+                left: 10px;
+                bottom: 10px;
+                pointer-events: none;
+            }
+            .instructions.visible {
+                display: block;
+            }
+
+            .instruction {
+                display: inline-block;
+                border-radius: 10px;
+                background-color: #111;
+                color: #ccc;
+                font-family: Helvetica, Arial, sans-serif;
+                padding: 5px 10px 5px 3px;
+                margin-right: 10px;
+                font-size: 14px;
+                transition: opacity 1s;
+            }
+            .instruction.hidden {
+                opacity: 0;
+            }
+
+            .icon {
+                vertical-align: middle;
+            }
+            .mouse .icon {
+                width: 40px;
+            }
+            .touch .icon {
+                width: 30px;
+            }
+            .icon.wheel {
+                margin: 0 -5px 0 -2px;
+            }
+            .icon.pinch {
+                margin-right: 2px;
             }
         </style>
     </head>
     <body>
-        <div id="display"></div>
-        <audio id="sound" loop src="arctic-neon.mp3"></audio>
+        <div class="display"></div>
+        <div class="instructions mouse">
+            <div class="instruction drag">
+                 <img class="icon" src="mouse-left.svg"> to drag
+            </div>
+            <div class="instruction morph">
+                <img class="icon" src="mouse-right.svg"> to morph
+            </div>
+            <div class="instruction zoom">
+                <img class="icon wheel" src="mouse-wheel.svg"> to zoom
+            </div>
+        </div>
+        <div class="instructions touch">
+            <div class="instruction drag">
+                <img class="icon" src="touch-one.svg"> to drag
+            </div>
+            <div class="instruction morph">
+                <img class="icon" src="touch-two.svg"> to morph
+            </div>
+            <div class="instruction zoom">
+                <img class="icon pinch" src="touch-pinch.svg"> to zoom
+            </div>
+        </div>
+        <audio class="sound" loop src="arctic-neon.mp3"></audio>
     </body>
 </html>

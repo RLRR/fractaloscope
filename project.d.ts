@@ -1,5 +1,7 @@
 interface Window {
     scope: any;
+    PointerEvent: any;
+    DocumentTouch: any;
 }
 
 declare module '*.glsl' {

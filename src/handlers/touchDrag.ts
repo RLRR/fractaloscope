@@ -49,6 +49,7 @@ export class TouchDrag {
         const newCenter = this.touchStartCenter.sub(point).add(startPoint);
 
         this.scope.setCenter(newCenter);
+        this.scope.fire('drag');
     }
 
     private canRun(e: TouchEvent): boolean {

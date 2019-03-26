@@ -68,6 +68,7 @@ export class TouchZoom {
         const midpointAfterZoom = this.scope.unproject(midpoint);
 
         this.scope.setCenter(this.scope.getCenter().add(midpointBeforeZoom).sub(midpointAfterZoom));
+        this.scope.fire('zoom');
     }
 
     private canRun(e: TouchEvent): boolean {

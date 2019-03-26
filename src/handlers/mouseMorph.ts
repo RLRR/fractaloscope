@@ -25,6 +25,8 @@ export class MouseMorph {
             this.mouseDownSeed = this.scope.getSeed();
             this.mouseDownPoint = new Vec2(e.clientX, e.clientY);
 
+            this.scope.getContainer().classList.add('morphing');
+
             document.addEventListener('mousemove', this.onMouseMove);
             document.addEventListener('mouseup', this.onMouseUp);
         }
@@ -32,6 +34,8 @@ export class MouseMorph {
 
     private onMouseUp = (e: MouseEvent): void => {
         e.preventDefault();
+
+        this.scope.getContainer().classList.remove('morphing');
 
         document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('mouseup', this.onMouseUp);
@@ -48,5 +52,6 @@ export class MouseMorph {
         const newSeed = this.mouseDownSeed.add(delta);
 
         this.scope.setSeed(newSeed);
+        this.scope.fire('morph');
     }
 }
