@@ -26,9 +26,18 @@ export function lerpColors(color1: RGBA, color2: RGBA, ratio: number): RGBA {
 }
 
 export function getPeakVolume(analyser: AnalyserNode): number {
-    const array = new Uint8Array(analyser.frequencyBinCount);
-    analyser.getByteTimeDomainData(array);
-    return Math.abs(Math.max(...array) - 128) / 128;
+    const array = new Float32Array(analyser.frequencyBinCount);
+    analyser.getFloatTimeDomainData(array);
+
+    let max = 0;
+    for (let i = 0; i < array.length; i++) {
+        const sample = Math.abs(array[i]);
+        if (sample > max) {
+            max = sample;
+        }
+    }
+
+    return max;
 }
 
 export function getDistance(points: [Vec2, Vec2]): number {
