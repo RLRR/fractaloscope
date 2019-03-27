@@ -330,11 +330,9 @@ export class Scope {
     }
 
     private initState(): void {
-        const isVerticalScreen = this.height > this.width;
-
-        this.setCenter(isVerticalScreen ? new Vec2(0.129, 0.235) : new Vec2(0, 0));
-        this.setSeed(isVerticalScreen ? new Vec2(-0.786, 0.154) : new Vec2(-0.76, 0.136));
-        this.setZoom(isVerticalScreen ? 2 : -0.8);
+        this.setCenter(new Vec2(0.129, 0.235));
+        this.setSeed(new Vec2(-0.786, 0.154));
+        this.setZoom(2);
 
         this.iterationLimitUniform.set(150);
     }

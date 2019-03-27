@@ -28,7 +28,7 @@ module.exports = function(env = {}) {
         },
         plugins: [
             new HtmlWebpackPlugin({
-                template: './src/index.html',
+                template: './assets/index.html',
                 favicon: './assets/favicon.png',
             }),
             new CopyWebpackPlugin(['assets']),

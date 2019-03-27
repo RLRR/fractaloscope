@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <title>Fractaloscope</title>
+        <meta name="MobileOptimized" content="1000"/>
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <link href="style.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="display"></div>
+        <audio class="audio" loop src="arctic-neon.mp3"></audio>
+        <div class="tips mouse">
+            <div class="tip drag"><img src="mouse-left.svg"> to drag</div>
+            <div class="tip morph"><img src="mouse-right.svg"> to morph</div>
+            <div class="tip zoom"><img src="mouse-wheel.svg"> to zoom</div>
+        </div>
+        <div class="tips touch">
+            <div class="tip drag"><img src="touch-one.svg"> to drag</div>
+            <div class="tip morph"><img src="touch-two.svg"> to morph</div>
+            <div class="tip zoom"><img src="touch-pinch.svg"> to zoom</div>
+        </div>
+        <div class="sound-button">
+            <img class="on hidden" src="sound-on.svg">
+            <img class="off" src="sound-off.svg">
+        </div>
+
+        <div class="no-webgl" id="no-webgl">
+            <div class="no-webgl-cell">
+                <p>Your browser does not support WebGL.</p>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,7 +1,6 @@
 interface Window {
     scope: any;
-    PointerEvent: any;
-    DocumentTouch: any;
+    WebGLRenderingContext: WebGLRenderingContext;
 }
 
 declare module '*.glsl' {
