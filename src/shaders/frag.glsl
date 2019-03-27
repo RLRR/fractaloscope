@@ -14,7 +14,7 @@ varying vec2 coordinates;
 void main() {
     vec2 z = coordinates;
 
-    float iterationsCount = 0.0;
+    float iterationCount = 0.0;
 
     for (int i = 0; i < 1000; i++) {
         if (i >= iterationLimit) {
@@ -31,10 +31,10 @@ void main() {
         z.x = x;
         z.y = y;
 
-        iterationsCount = float(i);
+        iterationCount = float(i);
     }
 
-    float level = iterationsCount / float(iterationLimit);
+    float level = iterationCount / float(iterationLimit);
 
     float step = 1.0 / float(textureSize);
     level = level * (1.0 - step) + step / 2.0;
