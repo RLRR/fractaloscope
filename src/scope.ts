@@ -330,8 +330,8 @@ export class Scope {
     }
 
     private initState(): void {
-        this.setCenter(new Vec2(0.129, 0.235));
-        this.setSeed(new Vec2(-0.786, 0.154));
+        this.setCenter(new Vec2(-0.52, 0.252));
+        this.setSeed(new Vec2(-0.529, 0.524));
         this.setZoom(2);
 
         this.iterationLimitUniform.set(150);
