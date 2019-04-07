@@ -26,12 +26,12 @@ export function lerpColors(color1: RGBA, color2: RGBA, ratio: number): RGBA {
 }
 
 export function getPeakVolume(analyser: AnalyserNode): number {
-    const array = new Float32Array(analyser.frequencyBinCount);
-    analyser.getFloatTimeDomainData(array);
+    const array = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteTimeDomainData(array);
 
     let max = 0;
     for (let i = 0; i < array.length; i++) {
-        const sample = Math.abs(array[i]);
+        const sample = Math.abs(array[i] - 128) / 128;
         if (sample > max) {
             max = sample;
         }

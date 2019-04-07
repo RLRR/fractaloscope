@@ -1,5 +1,6 @@
 interface Window {
     scope: any;
+    webkitAudioContext?: AudioContextConstructor;
     WebGLRenderingContext: WebGLRenderingContext;
 }
 

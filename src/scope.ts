@@ -348,7 +348,13 @@ export class Scope {
     }
 
     private initAudio(): void {
-        const ctx = new window.AudioContext();
+        const audioContext = window.AudioContext || window.webkitAudioContext;
+
+        if (audioContext === undefined) {
+            return;
+        }
+
+        const ctx = new audioContext();
         const analyser = ctx.createAnalyser();
         const source = ctx.createMediaElementSource(this.audioElement);
 
