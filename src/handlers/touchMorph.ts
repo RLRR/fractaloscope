@@ -1,5 +1,5 @@
 import { Vec2 } from '../vec2';
-import { Scope } from '../Scope';
+import { Scope } from '../scope';
 import { morphSpeed } from '../constants';
 import { getMidpoint, fingersAreTooClose, getTouchPoints, isZoomGesture } from '../utils';
 

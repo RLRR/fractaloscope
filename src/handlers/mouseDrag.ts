@@ -1,4 +1,4 @@
-import { Scope } from '../Scope';
+import { Scope } from '../scope';
 import { Vec2 } from '../vec2';
 
 export class MouseDrag {
