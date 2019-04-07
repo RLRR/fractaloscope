@@ -38,7 +38,9 @@ function init(): void {
     });
 
     scope.on('morph', () => {
-        if (scope.getSeed().sub(startSeed).length() > 0.01) {
+        const threshold = 0.04 / Math.pow(2, scope.getZoom());
+
+        if (scope.getSeed().sub(startSeed).length() > threshold) {
             morphElement.classList.add('hidden');
             scope.off('morph');
         }
