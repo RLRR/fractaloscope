@@ -73,7 +73,9 @@ function isMobile() {
 function isWebGlSupported(): boolean {
     try {
         return 'WebGLRenderingContext' in window
-            && !!document.createElement('canvas').getContext('webgl');
+            && !!document.createElement('canvas').getContext('webgl', {
+                failIfMajorPerformanceCaveat: true,
+            });
     } catch (e) {
         return false;
     }
