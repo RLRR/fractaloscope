@@ -23,11 +23,11 @@ html, body {
     bottom: 10px;
     pointer-events: none;
 }
-body.desktop .tips {
-    right: 60px;
-}
-body.mobile .tips {
-    right: 50px;
+
+@media (max-width: 390px) {
+    .tips {
+        max-width: 150px;
+    }
 }
 
 body.desktop .tips.mouse {
