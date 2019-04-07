@@ -2,7 +2,7 @@ import { Scope } from '../scope';
 import { Vec2 } from '../vec2';
 import {
     touchpadScrollZoomSpeed,
-    macFirefoxMouseZoomSpeed,
+    firefoxMouseZoomSpeed,
     touchpadGestureZoomSpeed,
 } from '../constants';
 
@@ -33,7 +33,7 @@ export class MouseZoom {
         }
 
         if (e.deltaMode === 1) {
-            return -e.deltaY * macFirefoxMouseZoomSpeed;
+            return -e.deltaY * firefoxMouseZoomSpeed;
         }
 
         return -e.deltaY * touchpadScrollZoomSpeed;

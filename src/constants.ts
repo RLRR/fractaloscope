@@ -5,7 +5,7 @@ export const paletteChangeDuration = 3000;
 
 export const touchpadScrollZoomSpeed = 0.0025;
 export const touchpadGestureZoomSpeed = 0.025;
-export const macFirefoxMouseZoomSpeed = 0.25;
+export const firefoxMouseZoomSpeed = 0.25;
 
 export const morphSpeed = 0.25;
 export const seedPeriod = 1500;
