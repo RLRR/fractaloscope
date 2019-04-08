@@ -5,15 +5,20 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "webpack --env.production",
-    "lint": "tslint -p tsconfig.json 'src/**/*.ts'"
+    "build": "npm run clean && webpack --env.production && npm run minify",
+    "lint": "tslint -p tsconfig.json 'src/**/*.ts'",
+    "clean": "rm -rf dist",
+    "minify": "npm run minify:html && npm run minify:css",
+    "minify:html": "html-minifier -c html-minifier.json -o dist/index.html dist/index.html",
+    "minify:css": "csso dist/style.css --output dist/style.css"
   },
   "author": "Alex Fedosov",
   "license": "MIT",
   "devDependencies": {
     "@types/webaudioapi": "0.0.27",
     "copy-webpack-plugin": "^4.6.0",
-    "html-webpack-plugin": "^3.2.0",
+    "csso-cli": "^2.0.2",
+    "html-minifier": "^4.0.0",
     "ts-loader": "^5.3.3",
     "tslint": "^5.12.1",
     "tslint-config-airbnb": "^5.11.1",

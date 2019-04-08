@@ -24,9 +24,9 @@ html, body {
     pointer-events: none;
 }
 
-@media (max-width: 390px) {
+@media (max-width: 420px) {
     .tips {
-        max-width: 150px;
+        width: 150px;
     }
 }
 
@@ -74,6 +74,8 @@ body.mobile .tips.touch {
     position: absolute;
     right: 10px;
     bottom: 10px;
+    width: 30px;
+    height: 30px;
     background-color: #111;
     border-radius: 10px;
     padding: 10px;

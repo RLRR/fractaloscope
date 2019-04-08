@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>Fractaloscope</title>
@@ -10,22 +11,26 @@
         <meta name="description" content="A fractal experience">
 
         <meta property="og:type" content="website">
-        <meta property="og:url" content="https://rlrr.github.io/fractaloscope/">
+        <meta property="og:url" content="https://fractaloscope.gl/">
         <meta property="og:title" content="Fractaloscope">
         <meta property="og:description" content="A fractal experience">
-        <meta property="og:image" content="https://rlrr.github.io/fractaloscope/fractaloscope.jpg">
+        <meta property="og:image" content="https://fractaloscope.gl/fractaloscope.jpg">
 
         <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="https://rlrr.github.io/fractaloscope/">
+        <meta property="twitter:url" content="https://fractaloscope.gl/">
         <meta property="twitter:title" content="Fractaloscope">
         <meta property="twitter:description" content="A fractal experience">
-        <meta property="twitter:image" content="https://rlrr.github.io/fractaloscope/fractaloscope.jpg">
+        <meta property="twitter:image" content="https://fractaloscope.gl/fractaloscope.jpg">
+
+        <link rel="shortcut icon" href="favicon.png">
 
         <link href="style.css" rel="stylesheet">
     </head>
     <body>
         <div class="display"></div>
+
         <audio class="audio" loop src="arctic-neon.mp3"></audio>
+
         <div class="tips mouse">
             <div class="tip drag"><img src="mouse-left.svg"> to drag</div>
             <div class="tip morph"><img src="mouse-right.svg"> to morph</div>
@@ -36,6 +41,7 @@
             <div class="tip morph"><img src="touch-two.svg"> to morph</div>
             <div class="tip zoom"><img src="touch-pinch.svg"> to zoom</div>
         </div>
+
         <div class="sound-button" title="Enable audio">
             <img class="on hidden" src="sound-on.svg">
             <img class="off" src="sound-off.svg">
@@ -46,5 +52,7 @@
                 <p>Your browser does not support WebGL.</p>
             </div>
         </div>
+
+        <script src="bundle.js"></script>
     </body>
 </html>
