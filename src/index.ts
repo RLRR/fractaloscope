@@ -57,11 +57,13 @@ function init(): void {
             scope.playAudio();
             soundOnElement.classList.remove('hidden');
             soundOffElement.classList.add('hidden');
+            soundElement.setAttribute('title', 'Disable audio');
             isPlayingAudio = true;
         } else {
             scope.pauseAudio();
             soundOnElement.classList.add('hidden');
             soundOffElement.classList.remove('hidden');
+            soundElement.setAttribute('title', 'Enable audio');
             isPlayingAudio = false;
         }
     });
