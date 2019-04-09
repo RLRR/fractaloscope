@@ -16,7 +16,7 @@ void main() {
 
     float iterationCount = 0.0;
 
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 200; i++) {
         if (i >= iterationLimit) {
             break;
         }
