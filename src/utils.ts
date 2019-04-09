@@ -61,19 +61,6 @@ export function getTouchPoints(e: TouchEvent): [Vec2, Vec2] {
     ];
 }
 
-export function fingersAreTooClose(e: TouchEvent): boolean {
-    if (e.touches.length !== 2) {
-        return false;
-    }
-
-    const distance = getDistance([
-        new Vec2(e.touches[0].clientX, e.touches[0].clientY),
-        new Vec2(e.touches[1].clientX, e.touches[1].clientY),
-    ]);
-
-    return distance < minFingerDistance;
-}
-
 export function isZoomGesture(
     prevPoints: [Vec2, Vec2],
     currPoints: [Vec2, Vec2],

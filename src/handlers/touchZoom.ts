@@ -1,12 +1,7 @@
 import { Scope } from '../scope';
 import { Vec2 } from '../vec2';
-import {
-    getDistance,
-    getMidpoint,
-    fingersAreTooClose,
-    getTouchPoints,
-    isZoomGesture,
- } from '../utils';
+import { minFingerDistance } from '../constants';
+import { getDistance, getMidpoint, getTouchPoints, isZoomGesture } from '../utils';
 
 export class TouchZoom {
     private scope: Scope;
@@ -78,6 +73,15 @@ export class TouchZoom {
     }
 
     private canRun(e: TouchEvent): boolean {
-        return e.touches.length === 2 && !fingersAreTooClose(e);
+        if (e.touches.length !== 2) {
+            return false;
+        }
+
+        const distance = getDistance([
+            new Vec2(e.touches[0].clientX, e.touches[0].clientY),
+            new Vec2(e.touches[1].clientX, e.touches[1].clientY),
+        ]);
+
+        return distance > minFingerDistance;
     }
 }

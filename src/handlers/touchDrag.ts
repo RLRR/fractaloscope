@@ -1,4 +1,3 @@
-import { fingersAreTooClose, getMidpoint, getTouchPoints } from '../utils';
 import { Scope } from '../scope';
 import { Vec2 } from '../vec2';
 
@@ -18,49 +17,51 @@ export class TouchDrag {
 
         this.isActive = false;
 
-        this.scope.getContainer().addEventListener('touchstart', this.handle);
-        this.scope.getContainer().addEventListener('touchend', this.handle);
-        this.scope.getContainer().addEventListener('touchmove', this.handle);
+        this.scope.getContainer().addEventListener('touchstart', this.onTouchStart);
+        this.scope.getContainer().addEventListener('touchend', this.onTouchEnd);
+        this.scope.getContainer().addEventListener('touchmove', this.onTouchMove);
     }
 
-    private startStop(e: TouchEvent): void {
-        if (this.canRun(e) && !this.isActive) {
-            this.touchStartCenter = this.scope.getCenter();
-            this.touchStartPoint = this.getTouchPoint(e);
-
-            this.isActive = true;
-        } else if (!this.canRun(e) && this.isActive) {
-            this.isActive = false;
+    private onTouchStart = (e: TouchEvent): void => {
+        if (e.touches.length === 1) {
+            this.start(e);
+        } else {
+            this.stop();
         }
     }
 
-    private handle = (e: TouchEvent): void => {
-        e.preventDefault();
+    private onTouchEnd = (): void => {
+        this.stop();
+    }
 
-        this.startStop(e);
+    private start(e: TouchEvent): void {
+        if (!this.isActive) {
+            const { clientX, clientY } = e.touches[0];
+            this.touchStartCenter = this.scope.getCenter();
+            this.touchStartPoint = new Vec2(clientX, clientY);
+
+            this.isActive = true;
+        }
+    }
+
+    private stop(): void {
+        this.isActive = false;
+    }
+
+    private onTouchMove = (e: TouchEvent): void => {
+        e.preventDefault();
 
         if (!this.isActive) {
             return;
         }
 
+        const { clientX, clientY } = e.touches[0];
         const startPoint = this.scope.unproject(this.touchStartPoint);
-        const point = this.scope.unproject(this.getTouchPoint(e));
+        const point = this.scope.unproject(new Vec2(clientX, clientY));
 
         const newCenter = this.touchStartCenter.sub(point).add(startPoint);
 
         this.scope.setCenter(newCenter);
         this.scope.fire('drag');
-    }
-
-    private canRun(e: TouchEvent): boolean {
-        return e.touches.length === 1 || fingersAreTooClose(e);
-    }
-
-    private getTouchPoint(e: TouchEvent): Vec2 {
-        if (e.touches.length === 1) {
-            return new Vec2(e.touches[0].clientX, e.touches[0].clientY);
-        }
-
-        return getMidpoint(getTouchPoints(e));
     }
 }

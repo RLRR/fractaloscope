@@ -1,7 +1,7 @@
 import { Vec2 } from '../vec2';
 import { Scope } from '../scope';
 import { morphSpeed } from '../constants';
-import { getMidpoint, fingersAreTooClose, getTouchPoints, isZoomGesture } from '../utils';
+import { getMidpoint, getTouchPoints, isZoomGesture } from '../utils';
 
 export class TouchMorph {
     private scope: Scope;
@@ -35,12 +35,12 @@ export class TouchMorph {
             || touchPoints === undefined
             || !isZoomGesture(this.prevTouchPoints, touchPoints);
 
-        if (this.canRun(e) && isMorph && !this.isActive) {
+        if (e.touches.length === 2 && isMorph && !this.isActive) {
             this.touchStartSeed = this.scope.getSeed();
             this.touchStartPoint = getMidpoint(getTouchPoints(e));
 
             this.isActive = true;
-        } else if ((!this.canRun(e) || !isMorph) && this.isActive) {
+        } else if ((e.touches.length !== 2 || !isMorph) && this.isActive) {
             this.isActive = false;
             this.prevTouchPoints = undefined;
         }
@@ -65,9 +65,5 @@ export class TouchMorph {
 
         this.scope.setSeed(newSeed);
         this.scope.fire('morph');
-    }
-
-    private canRun(e: TouchEvent): boolean {
-        return e.touches.length === 2 && !fingersAreTooClose(e);
     }
 }
