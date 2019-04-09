@@ -1,5 +1,4 @@
 import { Vec2 } from './vec2';
-import { minFingerDistance } from './constants';
 
 type RGBA = [number, number, number, number];
 
