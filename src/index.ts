@@ -46,7 +46,7 @@ function init(): void {
         }
     });
 
-    const soundElement = document.querySelector('.sound-button') as HTMLDivElement;
+    const soundElement = document.querySelector('.button.sound') as HTMLDivElement;
     const soundOnElement = soundElement.querySelector('.on') as HTMLImageElement;
     const soundOffElement = soundElement.querySelector('.off') as HTMLImageElement;
 
@@ -67,6 +67,39 @@ function init(): void {
             isPlayingAudio = false;
         }
     });
+
+    const hdElement = document.querySelector('.button.hd') as HTMLDivElement;
+    const hdOnElement = hdElement.querySelector('.on') as HTMLImageElement;
+    const hdOffElement = hdElement.querySelector('.off') as HTMLImageElement;
+
+    let hdMode = false;
+
+    hdElement.addEventListener('click', () => {
+        if (!hdMode) {
+            scope.enableHd();
+            hdOnElement.classList.remove('hidden');
+            hdOffElement.classList.add('hidden');
+            hdElement.setAttribute('title', 'Disable HD');
+            hdMode = true;
+        } else {
+            scope.disableHd();
+            hdOnElement.classList.add('hidden');
+            hdOffElement.classList.remove('hidden');
+            hdElement.setAttribute('title', 'Enable HD');
+            hdMode = false;
+        }
+    });
+
+    function updateHd(): void {
+        if (window.devicePixelRatio > 1) {
+            hdElement.classList.remove('hidden');
+        } else {
+            hdElement.classList.add('hidden');
+        }
+    }
+
+    updateHd();
+    window.addEventListener('resize', updateHd);
 }
 
 function isMobile() {
