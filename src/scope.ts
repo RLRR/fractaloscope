@@ -63,6 +63,8 @@ export class Scope {
     private width: number;
     private height: number;
 
+    private hdMode: boolean;
+
     private center: Vec2;
     private seed: Vec2;
     private zoom: number;
@@ -106,6 +108,8 @@ export class Scope {
 
         this.switchPalette();
         window.setInterval(this.switchPalette, paletteDuration);
+
+        this.hdMode = false;
 
         this.center = new Vec2(0, 0);
         this.seed = new Vec2(0, 0);
@@ -179,8 +183,8 @@ export class Scope {
         const width = container.clientWidth;
         const height = container.clientHeight;
 
-        const scaledWidth = width * window.devicePixelRatio;
-        const scaledHeight = height * window.devicePixelRatio;
+        const scaledWidth = this.hdMode ? width * window.devicePixelRatio : width;
+        const scaledHeight = this.hdMode ? height * window.devicePixelRatio : height;
 
         canvas.width = scaledWidth;
         canvas.height = scaledHeight;
@@ -202,6 +206,16 @@ export class Scope {
 
     public pauseAudio(): void {
         this.audioElement.pause();
+    }
+
+    public enableHd(): void {
+        this.hdMode = true;
+        this.resetSize();
+    }
+
+    public disableHd(): void {
+        this.hdMode = false;
+        this.resetSize();
     }
 
     public on(eventName: string, handler: () => void): void {
