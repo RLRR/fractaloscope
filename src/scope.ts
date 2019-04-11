@@ -76,7 +76,7 @@ export class Scope {
 
         window.addEventListener('resize', this.resetSize);
 
-        const gl = this.canvas.getContext('webgl') as WebGLRenderingContext;
+        const gl = this.canvas.getContext('webgl', { antialias: false }) as WebGLRenderingContext;
         const program = gl.createProgram() as WebGLProgram;
         const texture0 = gl.createTexture() as WebGLTexture;
         const texture1 = gl.createTexture() as WebGLTexture;
