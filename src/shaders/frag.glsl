@@ -13,34 +13,34 @@ varying vec2 coordinates;
 
 void main() {
     vec2 z = coordinates;
-
-    float iterationCount = 0.0;
+    int iterationCount = 0;
 
     for (int i = 0; i < 200; i++) {
-        if (i >= iterationLimit) {
+        if (i == iterationLimit) {
             break;
         }
 
-        float x = (z.x * z.x - z.y * z.y) + seed.x;
-        float y = (z.y * z.x + z.x * z.y) + seed.y;
+        float xx = z.x * z.x;
+        float yy = z.y * z.y;
+        float xy = z.x * z.y;
 
-        if ((x * x + y * y) > 4.0) {
+        z = vec2(xx - yy, xy + xy) + seed;
+
+        if (dot(z, z) > 4.0) {
             break;
         }
 
-        z.x = x;
-        z.y = y;
-
-        iterationCount = float(i);
+        iterationCount++;
     }
 
-    float level = iterationCount / float(iterationLimit);
-
+    float level = float(iterationCount) / float(iterationLimit);
     float step = 1.0 / float(textureSize);
-    level = level * (1.0 - step) + step / 2.0;
+    float uv = level * (1.0 - step) + step / 2.0;
 
-    vec4 prevColor = texture2D(prevTexture, vec2(level, 0.5));
-    vec4 currColor = texture2D(currTexture, vec2(level, 0.5));
+    vec2 coord = vec2(uv, 0.5);
+
+    vec4 prevColor = texture2D(prevTexture, coord);
+    vec4 currColor = texture2D(currTexture, coord);
 
     gl_FragColor = mix(prevColor, currColor, textureRatio);
 }
