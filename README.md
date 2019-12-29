@@ -1,11 +1,11 @@
 # Fractaloscope
-![fractaloscope](https://fractaloscope.gl/fractaloscope.jpg)
+![fractaloscope](https://alex.gl/demos/fractaloscope/fractaloscope.jpg)
 
 ## What it is
 Fractaloscope is an interactive [Julia fractal](https://en.wikipedia.org/wiki/Julia_set) viewer.
 
 ## See it in action
-https://fractaloscope.gl/
+https://alex.gl/demos/fractaloscope/
 
 ## Features
 * Ultra-fast rendering using WebGL shaders
